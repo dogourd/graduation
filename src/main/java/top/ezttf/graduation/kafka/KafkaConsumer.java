@@ -2,7 +2,6 @@ package top.ezttf.graduation.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import top.ezttf.graduation.common.Const;
 
@@ -16,13 +15,13 @@ import java.util.List;
 @Slf4j
 public class KafkaConsumer {
 
-    @KafkaListener(
-            id = "flume-listener",
-            topics = "${spring.kafka.topic}",
-            clientIdPrefix = "${spring.kafka.consumer.client-id}",
-            groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "flumeKafkaListenerContainerFactory"
-    )
+    //@KafkaListener(
+    //        id = "flume-listener",
+    //        topics = "${spring.kafka.topic}",
+    //        clientIdPrefix = "${spring.kafka.consumer.client-id}",
+    //        groupId = "${spring.kafka.consumer.group-id}",
+    //        containerFactory = "flumeKafkaListenerContainerFactory"
+    //)
     public void consumer(
             List<String> str
     ) {

@@ -43,8 +43,11 @@ public class SparkKafkaApp {
                 LocationStrategies.PreferConsistent(),
                 ConsumerStrategies.Subscribe(
                         topics,
-                        kafkaParams));
-        JavaPairDStream<String, String> dStream = stream.mapToPair(record -> new Tuple2<>(record.key(), record.value()));
+                        kafkaParams
+                )
+        );
+        JavaPairDStream<String, String> dStream =
+                stream.mapToPair(record -> new Tuple2<>(record.key(), record.value()));
         dStream.print();
         streamingContext.start();
         streamingContext.awaitTermination();

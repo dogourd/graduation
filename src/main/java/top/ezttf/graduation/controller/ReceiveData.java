@@ -3,7 +3,6 @@ package top.ezttf.graduation.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ezttf.graduation.common.Const;
 
 /**
  * @author yuwen
@@ -15,7 +14,8 @@ public class ReceiveData {
 
     @PostMapping("/dsky")
     public void getData(String data) {
-        log.debug(Const.IKafkaMessageCategory.STANDARD_HEADER + data);
+        //log.debug(Const.IKafkaMessageCategory.STANDARD_HEADER + data);
+        log.debug(data);
     }
 
     /**

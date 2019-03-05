@@ -11,7 +11,7 @@ spring:
 
     topic: flume-topic
 server:
-  port: 5000
+  port: 8080
 
 logging:
   config: classpath:logback-spring.xml

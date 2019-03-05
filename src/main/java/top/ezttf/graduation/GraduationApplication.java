@@ -3,10 +3,14 @@ package top.ezttf.graduation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author yuwen
+ * @date 2019/3/5
+ */
 @SpringBootApplication
-public class SparkApplication {
+public class GraduationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SparkApplication.class, args);
+        SpringApplication.run(GraduationApplication.class, args);
     }
 }

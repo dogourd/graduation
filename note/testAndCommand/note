@@ -1,0 +1,100 @@
+
+flume ====  logback
+RpcClient.addBatch(List<Event>)
+
+
+nohup bin/flume-ng agent --name agent --conf /home/yuwen/software/flume/conf --conf-file /home/yuwen/software/flume/conf/avro-memory-log.properties --no-reload-conf -Dflume.root.logger=DEBUG,console &
+
+agent.sources=avro
+agent.sinks=logger
+agent.channels=memory
+
+agent.sources.avro.type=avro
+agent.sources.avro.bind=0.0.0.0
+agent.sources.avro.port=5000
+
+agent.channels.memory.type=memory
+
+agent.sinks.logger.type=logger
+
+agent.sources.avro.channels=memory
+agent.sinks.logger.channel=memory
+
+
+					=========================================================================================================
+					=========================================================================================================
+
+
+nohup bin/flume-ng agent --name kafka --conf /home/yuwen/software/flume/conf --conf-file /home/yuwen/software/flume/conf/avro-memory-kafka.properties --no-reload-conf -Dflume.root.logger=DEBUG,console &
+
+
+kafka.sources=avro
+kafka.sinks=kafka
+kafka.channels=memory
+
+kafka.sources.avro.type=avro
+kafka.sources.avro.bind=0.0.0.0
+kafka.sources.avro.port=5000
+
+kafka.sinks.kafka.type=org.apache.flume.sink.kafka.KafkaSink
+kafka.sinks.kafka.brokerList=localhost:9092
+kafka.sinks.kafka.topic=flume-topic
+
+kafka.channels.memory.type=memory
+
+kafka.sources.avro.channels=memory
+kafka.sinks.kafka.channel=memory
+
+
+
+
+
+
+
+
+
+flume-topic
+
+windows log.info("message")                       --->
+linux flume port 5000                             --->
+linux kafka(topic is "flume-topic") port 9092     --->
+windows console
+
+先启动      ZooKeeper
+启动        Kafka
+启动        Flume
+
+
+
+
+
+
+
+
+
+
+kafka  server.properties
+
+broker.id=0
+num.network.threads=2
+num.io.threads=8
+socket.send.buffer.bytes=1048576
+socket.receive.buffer.bytes=1048576
+socket.request.max.bytes=104857600
+log.dirs=/tmp/kafka-logs
+num.partitions=2
+log.retention.hours=168
+
+log.segment.bytes=536870912
+log.retention.check.interval.ms=60000
+log.cleaner.enable=false
+
+zookeeper.connect=localhost:2181
+zookeeper.connection.timeout.ms=1000000
+
+
+
+
+./kafka-console-consumer.sh --bootstrap-server hadoop:9092 --topic flume-topic --from-beginning
+
+12942

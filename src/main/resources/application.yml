@@ -1,0 +1,19 @@
+spring:
+  kafka:
+    bootstrap-servers: hadoop:9092
+    consumer:
+      group-id: flume-kafka-group
+      client-id: flume-kafka-consumer
+      auto-offset-reset: latest
+      enable-auto-commit: false
+    producer:
+      retries: 3
+
+    topic: flume-topic
+server:
+  port: 5000
+
+logging:
+  config: classpath:logback-spring.xml
+
+debug: false

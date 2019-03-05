@@ -1,0 +1,87 @@
+flume 1.6.0-cdh5.7.0
+
+cp $FLUME_HOME/conf/flume-env.sh.template $FLUME_HOME/conf/flume-env.sh
+  vim              export JAVA_HOME=
+
+$FLUME_HOME/bin/flume-ng
+command usage ./flume-ng <command> [options]...
+
+
+
+flume : Apache Flume is a distributed, reliable, and available system for efficiently
+collecting, aggregating and moving large amounts of log data from many different sources to a centralized data store.
+即flume 是用来进行数据   收集, 聚合, 转移的一个分布式、高可靠、高可用的一个框架
+flume 中数据传输的单元为 event
+
+三大核心组件 (这三个组件整体可以理解为一个 agent)
+1. source (收集)
+
+2. channel (聚合)
+
+3. sink (转移)
+
+使用flume 的关键就是写配置文件
+1) 配置 source
+2) 配置 channel
+3) 配置 sink
+4) 将以上配置好的 3 个组件串起来
+
+案例
+一、 从指定的网络端口采集数据输出到控制台 (netcat source, memory channel, logger sink)
+
+    1) 编写配置文件
+        官网 setup
+        /**
+         * 此处 a1 即可理解为 agent, a1.sources即是配置数据源可以为多个, 逗号分隔此处配置为 r1.同理 即
+         * a1: agent名称
+         * r1: source 的名称
+         * k1: sink 的名称
+         * c1: channel 的名称
+         * 此时已经配置完成agent, 需要再分别配置 source, channel, 以及sink
+         * 最后 将三个组件串起来 对其进行组装
+         * a1.sources.r1.channels = c1  (即配置 source的channel 为c1, 注意因为一个 source可以输出到多个channel, 所以此处为r1.channels)
+         * a1.sinks.k1.channel = c1      (sink 的channel 为c1, 一个channel只能输出到一个 sink 所以此处为 k1.channel)
+         */
+
+        # example.conf: A single-node Flume configuration
+
+        # Name the components on this agent    (agent上组件的名称)
+        a1.sources = r1
+        a1.sinks = k1
+        a1.channels = c1
+
+        # Describe/configure the source
+        a1.sources.r1.type = netcat
+        a1.sources.r1.bind = localhost
+        a1.sources.r1.port = 44444
+
+        # Describe the sink
+        a1.sinks.k1.type = logger
+
+        # Use a channel which buffers events in memory
+        a1.channels.c1.type = memory
+        a1.channels.c1.capacity = 1000
+        a1.channels.c1.transactionCapacity = 100
+
+        # Bind the source and sink to the channel
+        a1.sources.r1.channels = c1
+        a1.sinks.k1.channel = c1
+
+
+    2) 启动 agent
+        bin/flume-ng agent -n $agent_name -c conf -f conf/flume-conf.properties.template
+       即 flume-ng agent \
+       --name a1 \
+       -conf $FLUME_HOME/conf \
+       --conf-file $FLUME_HOME/conf/example.conf \
+       -Dflume.root.logger=INFO, console
+
+    3) 使用telnet 连接 44444端口进行测试
+
+
+二、 监控一个文件实时采集新增的数据输出到控制台
+     (exec source, memory channel, logger sink)
+
+三、 将A服务器的日志 实时 收集到 B服务器
+                      A                                           B
+     (exec source, memory channel, avro sink)-->(avro source, memory channel, logger sink)

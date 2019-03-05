@@ -1,0 +1,79 @@
+kafka 2.11-2.1.0      port 9092
+
+kafka 是消息中间件的一种
+
+消息中间件: 生产者, 消费者, 消息
+
+理想情况下: 生产者生产一条消息, 消费者消费一条消息
+
+
+
+kafka 架构
+    producer   (生产者)
+    consumer   (消费者)
+    broker     (kafka)
+    topic      (主题, 为消息打上标签)
+
+
+kafka 部署
+    1) 单节点 单broker
+    2) 单节点 多broker
+    3) 多节点 多broker
+
+
+kafka需要使用 zookeeper, 首先要安装好zookeeper
+zookeeper 3.4.13               port 2181
+
+cp $ZK_HOME/conf/zoo_example.cfg $ZK_HOME/conf/zoo.cfg
+vim
+dataDir=
+
+
+zkServer.sh start
+zKCli.sh
+
+
+
+cd $KAFKA_HOME/config
+vim server.properties
+broker.id
+listeners
+log.dirs
+zookeeper.connect
+
+
+启动kafka
+usage kafka-server-start.sh [-daemon] server.properties [--override property=value]*
+
+bin/kafka-server-start.sh config/server.properties
+
+创建topic
+kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topics test
+副本系数为 1,  分区数为 1
+
+查看 zookeeper上挂了多少个 topic
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+生产消息
+bin/kafka-producer.sh --broker-list localhost:9092 --topic test
+
+消费消息
+bin/kafka-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+(如果携带 --from-beginning参数 则代表消息从头开始消费, 历史消费过的消息也会被重新消费)
+
+
+
+
+
+
+
+api
+
+Properties.put
+"request.required.acks", "metadata.broker.list", "serializer.class"
+
+
+
+flume 整合 kafka
+
+webserver -> avro source -> memory channel -> avro sink -> avro source -> memory channel -> kafka sink

@@ -1,0 +1,47 @@
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <appender name="flume" class="top.ezttf.graduation.flume.LogbackFlumeAppender">
+        <flumeAgents>
+            192.168.0.100:5000
+        </flumeAgents>
+        <flumeProperties>
+            connect-timeout=4000;
+            request-timeout=8000;
+            maxIoWorkers=3
+        </flumeProperties>
+        <batchSize>100</batchSize>
+        <reportingWindow>1000</reportingWindow>
+        <application>logback-flume</application>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level -&#45;&#45; [%thread] %logger{36}    : %message%n%ex</pattern>-->
+            <pattern>%message%n%ex</pattern>
+        </layout>
+    </appender>
+
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{36} : %message%n%ex</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
+    <logger name="top.ezttf.graduation" level="DEBUG" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="top.ezttf.graduation.flume" level="DEBUG" additivity="false">
+        <appender-ref ref="flume"/>
+    </logger>
+    <logger name="top.ezttf.graduation.controller.ReceiveData" level="DEBUG" additivity="false">
+        <appender-ref ref="flume"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="flume"/>
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

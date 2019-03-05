@@ -1,0 +1,11 @@
+hbase 1.2.0-cdh5.7.0            web ui port  60010
+
+command usage
+hbase [<options>] <command> [<args>]
+
+
+
+api
+
+configuration.set("hbase.zookeeper.quorum", "ip:2181")
+configuration.set("hbase.rootdir", "hdfs://ip:8020/hbase")

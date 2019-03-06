@@ -1,8 +1,12 @@
 package top.ezttf.graduation.flume;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.filter.LevelFilter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.FilterReply;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +53,15 @@ public class LogbackFlumeAppender extends UnsynchronizedAppenderBase<ILoggingEve
     private Integer reporterMaxThreadPoolSize;
     private Integer reporterMaxQueueSize;
 
+
+    @Override
+    public void addFilter(Filter<ILoggingEvent> newFilter) {
+        newFilter = new LevelFilter();
+        ((LevelFilter) newFilter).setLevel(Level.DEBUG);
+        ((LevelFilter) newFilter).setOnMatch(FilterReply.ACCEPT);
+        ((LevelFilter) newFilter).setOnMismatch(FilterReply.DENY);
+        super.addFilter(newFilter);
+    }
 
     @Override
     public void start() {

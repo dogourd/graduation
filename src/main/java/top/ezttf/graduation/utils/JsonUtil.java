@@ -121,4 +121,18 @@ public class JsonUtil {
             return null;
         }
     }
+
+    public static <T> String obj2StrPretty(T obj) {
+        if (obj == null) {
+            return null;
+        }
+        try {
+            return obj instanceof String
+                    ? (String) obj
+                    : MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.warn("Parse Object to String fail ", e);
+            return null;
+        }
+    }
 }

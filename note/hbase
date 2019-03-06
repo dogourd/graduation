@@ -9,3 +9,28 @@ api
 
 configuration.set("hbase.zookeeper.quorum", "ip:2181")
 configuration.set("hbase.rootdir", "hdfs://ip:8020/hbase")
+
+
+
+
+
+
+table的组成
+table = rowkey + family + column + timestamp + value
+        行键      列族      列       版本(时间戳)  数据本身的值
+
+存储模式
+(table, rowkey, family, column, timestamp) ---> value
+
+数据存储原型
+sortedMap<rowKey, List<SortedMap<column, List<value, timestamp>>>>
+即首先按照rowkey 进行排序, 若rowkey相同则按照列族中的列数据进行排序
+
+
+hbase建表
+create 'demo:user'                        create '命名空间:表名'
+{NAME => 'b', VERSION => '3',             NAME : 列族名
+COMPRESSION => 'SNAPPY',                  VERSION: 数据版本
+COMPRESSION_COMPACT => 'SNAPPY',          REPLICATION_SCOPE: 备份
+REPLICATION_SCOPE => 1}                   COMPRESSION: 数据压缩类型           gzip  lzo  snappy
+                                          COMPRESSION_COMPACT: 另外一种压缩类型

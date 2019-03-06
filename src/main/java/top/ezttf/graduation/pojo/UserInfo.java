@@ -40,7 +40,7 @@ public class UserInfo {
      * 客户手机与嗅探设备的距离  (分米)
      */
     @JsonProperty(value = "range")
-    private Integer range;
+    private Double range;
 
 
     /**
@@ -67,6 +67,12 @@ public class UserInfo {
      */
     @JsonProperty(value = "ds")
     private String ds;
+
+    /**
+     * 客户端连接的无线名称
+     */
+    @JsonProperty(value = "router")
+    private String router;
 
 
     public static void main(String[] args) {

@@ -8,4 +8,5 @@ import top.ezttf.graduation.entity.MySqlRowData;
  * @date 2019/3/6
  */
 public interface RowDataRepository extends JpaRepository<MySqlRowData, Long> {
+
 }

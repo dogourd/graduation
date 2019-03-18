@@ -29,6 +29,7 @@ public class SparkController {
                         .set("spark.executor.memory", "512m")
                         .setAppName("wordCount")
         ));
+
         spark.read()
                 .textFile("hdfs://hadoop:8020/README.txt").javaRDD()
                 .flatMap(word -> Arrays.asList(Pattern.compile(" ").split(word)).iterator())

@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
 public class SparkController {
 
     @GetMapping("wordCount")
-    public String wordCount() throws IOException {
+    public void wordCount() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("~/result.txt"));
         SparkSession spark = new SparkSession(new SparkContext(
                 new SparkConf().setMaster("local[2]").setJars(new String[]{"target/graduation-1.0.jar"})
@@ -36,7 +35,14 @@ public class SparkController {
                 .mapToPair(word -> new Tuple2<>(word, 1))
                 .reduceByKey((i, j) -> i + j)
                 .collect()
-                .forEach(out -> writer.write(out._1() + ": " + out._2()));
+                .forEach(out -> {
+                    try {
+                        writer.write(out._1() + ": " + out._2());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        writer.close();
         spark.stop();
     }
 }

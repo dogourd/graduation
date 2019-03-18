@@ -1,4 +1,4 @@
-package top.ezttf.graduation.flume;
+package top.ezttf.graduation.hadoop.flume;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.filter.LevelFilter;
@@ -13,10 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
-import top.ezttf.graduation.flume.util.FlumeAvroManager;
-import top.ezttf.graduation.flume.util.LogbackAdaptorFactory;
-import top.ezttf.graduation.flume.util.LoggingAdaptorFactory;
-import top.ezttf.graduation.flume.util.RemoteFlumeAgent;
+import top.ezttf.graduation.hadoop.flume.util.FlumeAvroManager;
+import top.ezttf.graduation.hadoop.flume.util.LogbackAdaptorFactory;
+import top.ezttf.graduation.hadoop.flume.util.LoggingAdaptorFactory;
+import top.ezttf.graduation.hadoop.flume.util.RemoteFlumeAgent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

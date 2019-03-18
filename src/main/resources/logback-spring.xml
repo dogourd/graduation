@@ -1,7 +1,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
-    <appender name="flume" class="top.ezttf.graduation.flume.LogbackFlumeAppender">
+    <appender name="flume" class="top.ezttf.graduation.hadoop.flume.LogbackFlumeAppender">
         <flumeAgents>
-            192.168.137.100:5000
+            hadoop:5000
         </flumeAgents>
         <flumeProperties>
             connect-timeout=4000;
@@ -33,7 +33,7 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="top.ezttf.graduation.flume" level="DEBUG" additivity="false">
+    <logger name="top.ezttf.graduation.hadoop.flume" level="DEBUG" additivity="false">
         <!--<appender-ref ref="flume"/>-->
         <appender-ref ref="console"/>
     </logger>

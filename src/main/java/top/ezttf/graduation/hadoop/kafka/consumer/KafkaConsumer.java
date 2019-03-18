@@ -1,14 +1,13 @@
-package top.ezttf.graduation.kafka.consumer;
+package top.ezttf.graduation.hadoop.kafka.consumer;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import top.ezttf.graduation.common.Const;
-import top.ezttf.graduation.kafka.consumer.handler.ReceiveDataVoHandler;
+import top.ezttf.graduation.hadoop.kafka.consumer.handler.ReceiveDataVoHandler;
 import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.ReceiveDataVo;
 
@@ -29,13 +28,13 @@ public class KafkaConsumer {
         this.voHandler = voHandler;
     }
 
-    @KafkaListener(
-            //id = "flume-listener",
-            topics = "${project.kafka.topic}",
-            //clientIdPrefix = "${spring.kafka.consumer.client-id}",
-            groupId = "${spring.kafka.consumer.group-id}"
-            //containerFactory = "flumeKafkaListenerContainerFactory"
-    )
+    //@KafkaListener(
+    //        //id = "flume-listener",
+    //        topics = "${project.kafka.topic}",
+    //        //clientIdPrefix = "${spring.kafka.consumer.client-id}",
+    //        groupId = "${spring.kafka.consumer.group-id}"
+    //        //containerFactory = "flumeKafkaListenerContainerFactory"
+    //)
     public void consumer(
             ConsumerRecord<?, ?> record
     ) {

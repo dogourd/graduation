@@ -1,4 +1,4 @@
-package top.ezttf.graduation.spark;
+package top.ezttf.graduation.hadoop.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.storage.StorageLevel;

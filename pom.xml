@@ -122,6 +122,11 @@
 
         <!--HBase-->
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-hadoop-hbase</artifactId>
+            <version>2.5.0.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <exclusions>

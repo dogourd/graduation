@@ -1,4 +1,4 @@
-package top.ezttf.graduation.dao;
+package top.ezttf.graduation.dao.mysql;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.ezttf.graduation.dao.mysql.RowDataRepository;
 import top.ezttf.graduation.entity.MySqlRowData;
 
 import java.util.List;

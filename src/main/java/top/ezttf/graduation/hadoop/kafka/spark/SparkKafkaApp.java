@@ -1,4 +1,4 @@
-package top.ezttf.graduation.kafka.spark;
+package top.ezttf.graduation.hadoop.kafka.spark;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;

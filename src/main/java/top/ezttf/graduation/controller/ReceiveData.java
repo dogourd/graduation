@@ -15,7 +15,9 @@ public class ReceiveData {
 
     @PostMapping("/dsky")
     public void getData(String data) {
-        log.debug(Const.IKafkaMessageCategory.STANDARD_HEADER + data);
+        if (data != null) {
+            log.debug(Const.IKafkaMessageCategory.STANDARD_HEADER + data);
+        }
         //log.debug(data);
         //ReceiveDataVo vo = JSON.parseObject(data, ReceiveDataVo.class);
         //log.debug(JsonUtil.obj2StrPretty(vo));

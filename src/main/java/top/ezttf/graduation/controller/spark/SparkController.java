@@ -23,7 +23,7 @@ public class SparkController {
 
     @GetMapping("wordCount")
     public void wordCount() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(Paths.get("~/result.txt"));
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get("/home/yuwen/result.txt"));
         SparkSession spark = new SparkSession(new SparkContext(
                 new SparkConf().setMaster("local[2]").setJars(new String[]{"target/graduation-1.0.jar"})
                         .set("spark.executor.memory", "512m")

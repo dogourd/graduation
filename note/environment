@@ -1,25 +1,15 @@
-Linux
-version:
-
-    CentOS          7.3
-    Jdk             8u191
-    Scala           2.11.12
-    Flume           1.6.0-cdh5.7.0
-    Hadoop          2.6.0-cdh5.7.0
-    ZooKeeper       3.4.13
-    Kafka           2.11-2.1.0
-    Spark           2.4.0
-    HBase           1.2.0-cdh5.7.0
-    MySQL           5.7.23
-    Nginx           1.15.4
-    Redis           4.0.11
+OS              CentOS7.3
+Jdk             8u191
+Scala           2.11.12
+Flume           1.6.0-cdh5.7.0
+Hadoop          2.6.0-cdh5.7.0
+ZooKeeper       3.4.13
+Kafka           2.11-2.1.0
+Spark           2.4.0
+HBase           1.2.0-cdh5.7.0
+MySQL           8.0.15
+Nginx           1.15.4
+Redis           4.0.11
 
 
-port:
-    hdfs            8020
-    zookeeper       2181
-    yarn            8088
-    kafka           9092
-    redis           6379
-    mysql           3306
 

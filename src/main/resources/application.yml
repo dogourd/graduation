@@ -1,8 +1,5 @@
 server:
   port: 8023
-  tomcat:
-    uri-encoding: UTF-8
-
 spring:
   messages:
     encoding: UTF-8
@@ -24,7 +21,6 @@ spring:
       retries: 3
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
     properties:
@@ -47,7 +43,6 @@ spring:
 logging:
   config: classpath:logback-spring.xml
 
-#debug: true
 
 project:
   kafka:

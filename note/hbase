@@ -34,3 +34,12 @@ COMPRESSION => 'SNAPPY',                  VERSION: 数据版本
 COMPRESSION_COMPACT => 'SNAPPY',          REPLICATION_SCOPE: 备份
 REPLICATION_SCOPE => 1}                   COMPRESSION: 数据压缩类型           gzip  lzo  snappy
                                           COMPRESSION_COMPACT: 另外一种压缩类型
+
+
+
+建表
+预 d 列族下保存探针收集信息
+
+create 'graduation:allInfo'
+{NAME => 'd'},
+{}

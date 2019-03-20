@@ -24,6 +24,7 @@ spring:
       retries: 3
   jpa:
     show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
     properties:
@@ -35,15 +36,18 @@ spring:
       maximum-pool-size: 10
       username: yuwen
       password: lyp82nlf
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql:///grad?autoReconnect=true&characterEncoding=utf-8&useSSL=false
-
-
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///grad?characterEncoding=utf-8&serverTimeZone=UTC&useSSL=false
+  data:
+    hbase:
+      quorum: hadoop:2181
+      rootDir: hdfs://hadoop:8020/hbase
+      nodeParent: /hbase
 
 logging:
   config: classpath:logback-spring.xml
 
-debug: true
+#debug: true
 
 project:
   kafka:

@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 @RestController
 public class SparkController {
 
+    private static final Pattern pattern = Pattern.compile(" ");
+
     @GetMapping("wordCount")
     public void wordCount() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(Paths.get("/home/yuwen/result.txt"));
@@ -32,7 +34,7 @@ public class SparkController {
 
         spark.read()
                 .textFile("hdfs://hadoop:8020/README.txt").javaRDD()
-                .flatMap(word -> Arrays.asList(Pattern.compile(" ").split(word)).iterator())
+                .flatMap(word -> Arrays.asList(pattern.split(word)).iterator())
                 .mapToPair(word -> new Tuple2<>(word, 1))
                 .reduceByKey((i, j) -> i + j)
                 .collect()

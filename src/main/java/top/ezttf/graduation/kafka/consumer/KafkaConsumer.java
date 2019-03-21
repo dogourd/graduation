@@ -1,4 +1,4 @@
-package top.ezttf.graduation.hadoop.kafka.consumer;
+package top.ezttf.graduation.kafka.consumer;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ezttf.graduation.common.Const;
-import top.ezttf.graduation.hadoop.kafka.consumer.handler.ReceiveDataVoHandler;
+import top.ezttf.graduation.kafka.consumer.handler.ReceiveDataVoHandler;
 import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.ReceiveDataVo;
 

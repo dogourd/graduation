@@ -1,4 +1,4 @@
-package top.ezttf.graduation.hadoop.kafka;
+package top.ezttf.graduation.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 

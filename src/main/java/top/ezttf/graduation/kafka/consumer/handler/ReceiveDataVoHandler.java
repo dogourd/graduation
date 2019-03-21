@@ -1,4 +1,4 @@
-package top.ezttf.graduation.hadoop.kafka.consumer.handler;
+package top.ezttf.graduation.kafka.consumer.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

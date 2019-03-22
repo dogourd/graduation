@@ -1,4 +1,4 @@
-package top.ezttf.graduation.hadoop.flume.util;
+package top.ezttf.graduation.appender.util;
 
 
 import org.slf4j.Logger;

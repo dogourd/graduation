@@ -1,7 +1,7 @@
 package top.ezttf.graduation.dao.mysql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import top.ezttf.graduation.vo.District;
+import top.ezttf.graduation.pojo.District;
 
 /**
  * @author yuwen

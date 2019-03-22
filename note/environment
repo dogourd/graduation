@@ -12,11 +12,11 @@ Nginx           1.15.4
 Redis           4.0.11
 
 
-    /**
-     * create 'pb:passtemplate',
-     * {NAME => 'b', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
-     * {NAME => 'c', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
-     */
+/**
+ * create 'pb:passtemplate',
+ * {NAME => 'b', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+ * {NAME => 'c', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
+ */
 
 
 

@@ -1,4 +1,5 @@
-package top.ezttf.graduation.hadoop.flume;
+package top.ezttf.graduation.appender;
+
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.filter.LevelFilter;
@@ -13,10 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
-import top.ezttf.graduation.hadoop.flume.util.FlumeAvroManager;
-import top.ezttf.graduation.hadoop.flume.util.LogbackAdaptorFactory;
-import top.ezttf.graduation.hadoop.flume.util.LoggingAdaptorFactory;
-import top.ezttf.graduation.hadoop.flume.util.RemoteFlumeAgent;
+import top.ezttf.graduation.appender.util.FlumeAvroManager;
+import top.ezttf.graduation.appender.util.LogbackAdaptorFactory;
+import top.ezttf.graduation.appender.util.LoggingAdaptorFactory;
+import top.ezttf.graduation.appender.util.RemoteFlumeAgent;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -96,7 +97,7 @@ public class LogbackFlumeAppender extends UnsynchronizedAppenderBase<ILoggingEve
     protected void append(ILoggingEvent eventObject) {
         if (avroManager != null) {
             String body = layout != null ? layout.doLayout(eventObject) : eventObject.getFormattedMessage();
-            Map<String, String> headers = new HashMap<>();
+            Map<String, String> headers = new HashMap<>(8);
             if (additionHeaders != null) {
                 headers.putAll(additionHeaders);
             }

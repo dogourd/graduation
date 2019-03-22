@@ -1,4 +1,4 @@
-package top.ezttf.graduation.pojo;
+package top.ezttf.graduation.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -73,10 +73,4 @@ public class UserInfo {
      */
     @JsonProperty(value = "router")
     private String router;
-
-
-    public static void main(String[] args) {
-        System.out.println((0x7fffffffL + 1));
-        System.out.println(1 << 31);
-    }
 }

@@ -3,7 +3,7 @@ package top.ezttf.graduation.kafka.consumer.handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ezttf.graduation.dao.mysql.RowDataRepository;
-import top.ezttf.graduation.vo.MySqlRowData;
+import top.ezttf.graduation.pojo.MySqlRowData;
 import top.ezttf.graduation.vo.ReceiveData;
 
 import java.util.Date;

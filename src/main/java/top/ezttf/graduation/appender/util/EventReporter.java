@@ -1,4 +1,4 @@
-package top.ezttf.graduation.hadoop.flume.util;
+package top.ezttf.graduation.appender.util;
 
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;

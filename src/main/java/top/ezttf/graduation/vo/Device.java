@@ -1,4 +1,4 @@
-package top.ezttf.graduation.pojo;
+package top.ezttf.graduation.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

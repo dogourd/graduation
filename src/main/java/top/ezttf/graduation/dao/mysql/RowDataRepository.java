@@ -1,7 +1,7 @@
 package top.ezttf.graduation.dao.mysql;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import top.ezttf.graduation.vo.MySqlRowData;
+import top.ezttf.graduation.pojo.MySqlRowData;
 
 /**
  * @author yuwen

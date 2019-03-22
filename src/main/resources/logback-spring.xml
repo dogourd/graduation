@@ -1,5 +1,5 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
-    <appender name="flume" class="top.ezttf.graduation.hadoop.flume.LogbackFlumeAppender">
+    <appender name="flume" class="top.ezttf.graduation.appender.LogbackFlumeAppender">
         <flumeAgents>
             hadoop:5000
         </flumeAgents>

@@ -1,8 +1,12 @@
 package top.ezttf.graduation.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.utils.DateUtils;
 import top.ezttf.graduation.vo.Warn;
 import top.ezttf.graduation.vo.Wifi;
+
+import java.time.Instant;
+import java.util.StringJoiner;
 
 /**
  * @author yuwen
@@ -18,18 +22,24 @@ public class RowKeyGenUtil {
      * @return
      */
     public static String genWifiRowKey(Wifi wifi) {
-        String rowKey = wifi.getMmac();
+        String rowKey = new StringJoiner("-")
+                .add(wifi.getMmac())
+                .add(DateUtils.formatDate(wifi.getTime()))
+                .toString();
         log.info("GenWifiRowKey: {}, {}", wifi, rowKey);
         return rowKey;
     }
 
     /**
-     * 根据提供的 warn 对象生成 rowKey (设备 mac 地址)
+     * 根据提供的 warn 对象生成 rowKey ("mmac-time")
      * @param warn
      * @return
      */
     public static String genWarnRowKey(Warn warn) {
-        String rowKey = warn.getMmac();
+        String rowKey = new StringJoiner("-")
+                .add(warn.getMmac())
+                .add(Instant.now().toString())
+                .toString();
         log.info("GenWarnRowKey: {}, {}", warn, rowKey);
         return rowKey;
     }

@@ -1,4 +1,4 @@
-package top.ezttf.graduation.entity;
+package top.ezttf.graduation.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import top.ezttf.graduation.common.Const;
 import top.ezttf.graduation.kafka.consumer.handler.ReceiveDataVoHandler;
 import top.ezttf.graduation.utils.JsonUtil;
-import top.ezttf.graduation.vo.ReceiveDataVo;
+import top.ezttf.graduation.vo.ReceiveData;
 
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ public class KafkaConsumer {
             String message = kafkaMessage.get().toString();
             if (StringUtils.startsWith(message, Const.IKafkaMessageCategory.STANDARD_HEADER)) {
                 message = StringUtils.substring(message, Const.IKafkaMessageCategory.STANDARD_HEADER.length());
-                ReceiveDataVo vo = JSON.parseObject(message, ReceiveDataVo.class);
+                ReceiveData vo = JSON.parseObject(message, ReceiveData.class);
                 voHandler.handleReceiveDataVo(vo);
                 log.error(JsonUtil.obj2StrPretty(vo));
             }

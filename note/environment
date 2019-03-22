@@ -24,12 +24,12 @@ HBase table:
 create_namespace 'graduation'
 
 create 'graduation:wifi',
-{NAME => 'd', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'},
-{NAME => 'u', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'},
-{NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'}
+{NAME => 'd', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 'u', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
 
-create 'graduation:warn'
-{NAME => 'd', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'},
-{NAME => 'i', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'},
-{NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW', COMPRESS => 'SNAPPY'}
+create 'graduation:warn',
+{NAME => 'd', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 'i', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
 

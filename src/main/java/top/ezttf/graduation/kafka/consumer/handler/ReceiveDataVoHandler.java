@@ -3,8 +3,8 @@ package top.ezttf.graduation.kafka.consumer.handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.ezttf.graduation.dao.mysql.RowDataRepository;
-import top.ezttf.graduation.entity.MySqlRowData;
-import top.ezttf.graduation.vo.ReceiveDataVo;
+import top.ezttf.graduation.vo.MySqlRowData;
+import top.ezttf.graduation.vo.ReceiveData;
 
 import java.util.Date;
 
@@ -22,7 +22,7 @@ public class ReceiveDataVoHandler {
         this.rowDataRepository = rowDataRepository;
     }
 
-    public void handleReceiveDataVo(ReceiveDataVo vo) {
+    public void handleReceiveDataVo(ReceiveData vo) {
         // 探针设备id
         String deviceId = vo.getId();
         // 探针设备mac 地址

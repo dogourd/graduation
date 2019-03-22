@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReceiveDataVo {
+public class ReceiveData {
 
     @JsonProperty(value = "id")
     private String id;

@@ -11,7 +11,7 @@ import top.ezttf.graduation.common.Const;
  */
 @Slf4j
 @RestController
-public class ReceiveData {
+public class ReceiveDataController {
 
     @PostMapping("/dsky")
     public void getData(String data) {

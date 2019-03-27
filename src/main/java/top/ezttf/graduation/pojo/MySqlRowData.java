@@ -64,9 +64,10 @@ public class MySqlRowData {
     private String mac;
 
     public MySqlRowData(String deviceId, String mmac, Date startTime, Double range, String mac) {
+        Date start = startTime;
         this.deviceId = deviceId;
         this.mmac = mmac;
-        this.startTime = startTime;
+        this.startTime = start;
         this.range = range;
         this.mac = mac;
     }

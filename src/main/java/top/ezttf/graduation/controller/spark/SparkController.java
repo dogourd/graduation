@@ -92,13 +92,11 @@ public class SparkController {
             Result result = immutableBytesWritableResultTuple2._2();
             // 行键
             String key = Bytes.toString(result.getRow());
-            log.debug(key + "777");
             String value = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );
-            log.debug("key, value" + 888);
-            log.debug(key + "   " + value);
+            log.debug(key + ",,,,,,,,," + value);
             builder.append(key).append(": ").append(value).append("\n");
         });
 

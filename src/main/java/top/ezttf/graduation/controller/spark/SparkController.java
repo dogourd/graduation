@@ -20,6 +20,7 @@ import top.ezttf.graduation.constant.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @RestController
-public class SparkController {
+public class SparkController implements Serializable {
 
     private static final Pattern pattern = Pattern.compile(" ");
 

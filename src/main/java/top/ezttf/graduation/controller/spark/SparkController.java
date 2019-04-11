@@ -96,6 +96,11 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );
+            if (value == null) {
+                log.debug("value is null");
+            } else if (value.isEmpty()) {
+                log.debug("value is empty");
+            };
             log.debug(key + ",,,,,,,,," + value);
             builder.append(key).append(": ").append(value).append("\n");
         });

@@ -9,18 +9,17 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
-import scala.runtime.AbstractFunction1;
-import scala.runtime.BoxedUnit;
 import top.ezttf.graduation.constant.Constants;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @RestController
-public class SparkController implements Serializable {
+public class SparkController {
 
     private static final Pattern pattern = Pattern.compile(" ");
 
@@ -86,21 +85,19 @@ public class SparkController implements Serializable {
         long count = hbaseRDD.count();
         log.info("count: {}", count);
         StringBuilder builder = new StringBuilder();
-        hbaseRDD.foreach(new AbstractFunction1<Tuple2<ImmutableBytesWritable, Result>, BoxedUnit>() {
-            @Override
-            public BoxedUnit apply(Tuple2<ImmutableBytesWritable, Result> immutableBytesWritableResultTuple2) {
-                Result result = immutableBytesWritableResultTuple2._2();
-                // 行键
-                String key = Bytes.toString(result.getRow());
-                String value = Bytes.toString(result.getValue(
-                        Constants.WarnTable.FAMILY_I.getBytes(),
-                        Constants.WarnTable.COUNT.getBytes())
-                );
-                log.debug(key + "   " + value);
-                builder.append(key).append(": ").append(value).append("\n");
-                return null;
-            }
+        JavaRDD<Tuple2<ImmutableBytesWritable, Result>> javaRDD = hbaseRDD.toJavaRDD();
+        javaRDD.foreach((VoidFunction<Tuple2<ImmutableBytesWritable, Result>>) immutableBytesWritableResultTuple2 -> {
+            Result result = immutableBytesWritableResultTuple2._2();
+            // 行键
+            String key = Bytes.toString(result.getRow());
+            String value = Bytes.toString(result.getValue(
+                    Constants.WarnTable.FAMILY_I.getBytes(),
+                    Constants.WarnTable.COUNT.getBytes())
+            );
+            log.debug(key + "   " + value);
+            builder.append(key).append(": ").append(value).append("\n");
         });
+
         sparkContext.stop();
         return builder.toString();
     }

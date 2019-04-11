@@ -44,6 +44,7 @@ public class JsonUtil {
      * @return
      * @throws IOException
      */
+    @SuppressWarnings("all")
     public static <T> T str2Obj(String json, Class<T> clazz) {
         if (StringUtils.isBlank(json) || clazz == null) {
             return null;
@@ -123,6 +124,7 @@ public class JsonUtil {
         }
     }
 
+    @SuppressWarnings("all")
     public static <T> String obj2StrPretty(T obj) {
         if (obj == null) {
             return null;

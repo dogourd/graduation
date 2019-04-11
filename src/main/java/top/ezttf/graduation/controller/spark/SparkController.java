@@ -1,5 +1,6 @@
 package top.ezttf.graduation.controller.spark;
 
+import com.alibaba.fastjson.JSON;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
@@ -99,6 +100,6 @@ public class SparkController {
         });
 
         sparkContext.stop();
-        return builder.toString();
+        return JSON.toJSONString(builder.toString());
     }
 }

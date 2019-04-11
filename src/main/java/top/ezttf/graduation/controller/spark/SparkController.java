@@ -69,13 +69,15 @@ public class SparkController {
 
     @GetMapping("/readHbase")
     public String readHbase() {
-        SparkConf sparkConf = new SparkConf().setAppName("readHbase").setMaster("local[2]");
+        SparkConf sparkConf = new SparkConf().setAppName("readHbase")
+                .setMaster("local[2]")
+                .set("spark.executor.memory", "512m");
         SparkContext sparkContext = new SparkContext(sparkConf);
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
         RDD<Tuple2<ImmutableBytesWritable, Result>> hbaseRDD =
                 sparkContext.newAPIHadoopRDD(
-                        hbaseTemplate.getConfiguration(),
+                        configuration,
                         TableInputFormat.class,
                         ImmutableBytesWritable.class,
                         Result.class

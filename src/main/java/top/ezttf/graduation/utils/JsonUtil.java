@@ -21,6 +21,7 @@ import java.util.Locale;
 @Slf4j
 public class JsonUtil {
 
+    @SuppressWarnings("all")
     public static final ObjectMapper MAPPER;
 
     static {

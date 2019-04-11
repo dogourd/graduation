@@ -96,8 +96,12 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );
-            log.debug(key + ",,,,,,,,," + value);
-            builder.append(key).append(": ").append(value).append("\n");
+            String time = Bytes.toString(result.getValue(
+                    Constants.WarnTable.FAMILY_T.getBytes(),
+                    Constants.WarnTable.TIME.getBytes()
+            ));
+            log.debug(key + ",,,,,,,,," + value + ",,,,," + time);
+            builder.append(key).append(": ").append(value.toString()).append(time).append("\n");
         });
 
         sparkContext.stop();

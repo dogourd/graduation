@@ -106,6 +106,7 @@ public class SparkController {
         });
 
         sparkContext.stop();
+        log.debug("final builder is " + builder.toString());
         return JSON.toJSONString(builder.toString());
     }
 }

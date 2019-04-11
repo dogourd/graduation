@@ -92,15 +92,10 @@ public class SparkController {
             Result result = immutableBytesWritableResultTuple2._2();
             // 行键
             String key = Bytes.toString(result.getRow());
-            String value = Bytes.toString(result.getValue(
+            Integer value = Bytes.toInt(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );
-            if (value == null) {
-                log.debug("value is null");
-            } else if (value.isEmpty()) {
-                log.debug("value is empty");
-            };
             log.debug(key + ",,,,,,,,," + value);
             builder.append(key).append(": ").append(value).append("\n");
         });

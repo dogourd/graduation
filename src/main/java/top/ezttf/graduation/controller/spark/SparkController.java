@@ -102,10 +102,10 @@ public class SparkController {
             ));
             log.debug(key + ",,,,,,,,," + value + ",,,,," + time);
             builder.append(key).append(": ").append(value.toString()).append(time).append("\n");
+            log.debug("builder is" + builder.toString());
         });
 
         sparkContext.stop();
-        log.debug(builder.toString());
         return JSON.toJSONString(builder.toString());
     }
 }

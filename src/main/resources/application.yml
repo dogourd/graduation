@@ -26,6 +26,7 @@ spring:
     properties:
       hibernate.format_sql: true
     open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL57Dialect
   datasource:
     hikari:
       minimum-idle: 5

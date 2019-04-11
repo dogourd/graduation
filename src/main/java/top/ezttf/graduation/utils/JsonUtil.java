@@ -65,6 +65,7 @@ public class JsonUtil {
      * @return
      * @throws IOException
      */
+    @SuppressWarnings("all")
     public static <T> T str2Obj(String json, TypeReference<T> typeReference) {
         if (StringUtils.isBlank(json) || typeReference == null) {
             return null;

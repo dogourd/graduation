@@ -23,7 +23,7 @@ public class RowKeyGenUtil {
      */
     public static String genWifiRowKey(Wifi wifi) {
         String rowKey = new StringJoiner("-")
-                .add(wifi.getMmac())
+                .add(wifi.getMac())
                 .add(DateUtils.formatDate(wifi.getTime()))
                 .toString();
         log.info("GenWifiRowKey: {}, {}", wifi, rowKey);

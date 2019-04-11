@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yuwen
@@ -44,4 +46,21 @@ public class Wifi {
      * 信息手机时间
      */
     private Date time;
+
+    public static List<Wifi> createWifisFromData(ReceiveData data) {
+        String id = data.getId();
+        String mmac = data.getMmac();
+        Date time = data.getTime();
+        List<Wifi> wifis = new ArrayList<>();
+        data.getUserInfos().forEach(userInfo -> {
+            Wifi wifi = new Wifi();
+            wifi.setMac(userInfo.getMac());
+            wifi.setRange(userInfo.getRange());
+            wifi.setId(id);
+            wifi.setMmac(mmac);
+            wifi.setTime(time);
+            wifis.add(wifi);
+        });
+        return wifis;
+    }
 }

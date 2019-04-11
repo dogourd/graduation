@@ -12,11 +12,11 @@ spring:
     name: graduation
   kafka:
     bootstrap-servers: hadoop:9092
-    consumer:
-      group-id: flume-kafka-group
-      client-id: flume-kafka-consumer
-      auto-offset-reset: latest
-      enable-auto-commit: false
+#    consumer:
+#      group-id: flume-kafka-group
+#      client-id: flume-kafka-consumer
+#      auto-offset-reset: latest
+#      enable-auto-commit: false
     producer:
       retries: 3
   jpa:
@@ -33,7 +33,7 @@ spring:
       username: yuwen
       password: lyp82nlf
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql:///grad?characterEncoding=utf-8&serverTimeZone=UTC&useSSL=false
+    url: jdbc:mysql:///grad?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false
   data:
     hbase:
       quorum: hadoop:2181
@@ -46,7 +46,8 @@ logging:
 
 project:
   kafka:
-    topic: flume-topic
+    flume-topic: flume-topic
+    warn-topic: warn-topic
   hbase:
     zookeeper:
       quorum: hadoop

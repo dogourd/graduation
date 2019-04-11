@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import top.ezttf.graduation.constant.Constants;
 import top.ezttf.graduation.service.IWarnService;
 import top.ezttf.graduation.utils.RowKeyGenUtil;
-import top.ezttf.graduation.vo.ReceiveData;
 import top.ezttf.graduation.vo.Warn;
 
 import java.util.List;
@@ -30,10 +29,13 @@ public class WarnServiceImpl implements IWarnService {
         this.hbaseTemplate = hbaseTemplate;
     }
 
+    /**
+     * TODO 程序会在kafka的flume-topic上接收到receiveData数据, 应该
+     * 开有两个Kafka消费者组(hbase,spark)分别将数据保存到hbase(构造warn和wifi), 进行sparkStreaming计算
+     * @param warn
+     */
     @Override
-    public void saveWarn(ReceiveData receiveData) {
-        Warn warn = new Warn();
-        warn = warn.assembleFromReceiveData(receiveData);
+    public void saveWarn(Warn warn) {
         String mmac = RowKeyGenUtil.genWarnRowKey(warn);
 
         List<Mutation> datas = Lists.newArrayList();
@@ -47,11 +49,14 @@ public class WarnServiceImpl implements IWarnService {
 
         Put put = new Put(Bytes.toBytes(mmac));
         put.addColumn(FAMILY_D, ID, Bytes.toBytes(warn.getId()));
+        put.addColumn(FAMILY_D, MMAC, Bytes.toBytes(warn.getMmac()));
         put.addColumn(FAMILY_I, COUNT, Bytes.toBytes(warn.getCount()));
-        //String pattern = "yyyy-MM-dd HH:mm:ss";
-        put.addColumn(FAMILY_T, TIME, Bytes.toBytes(DateUtils.formatDate(warn.getTime(), "yyyy-MM-dd")));
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        put.addColumn(FAMILY_T, TIME, Bytes.toBytes(DateUtils.formatDate(warn.getTime(), pattern)));
         datas.add(put);
         hbaseTemplate.saveOrUpdates(Constants.WarnTable.TABLE_NAME, datas);
     }
+
+
 
 }

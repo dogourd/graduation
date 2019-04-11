@@ -1,6 +1,7 @@
 package top.ezttf.graduation.service;
 
 import top.ezttf.graduation.vo.ReceiveData;
+import top.ezttf.graduation.vo.Warn;
 
 /**
  * @author yuwen
@@ -8,5 +9,5 @@ import top.ezttf.graduation.vo.ReceiveData;
  */
 public interface IWarnService {
 
-    void saveWarn(ReceiveData receiveData);
+    void saveWarn(Warn warn);
 }

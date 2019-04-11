@@ -81,7 +81,6 @@ public class Constants {
          */
         public static final String ID = "id";
 
-        // FIXME 考虑到当前直接将mmac设置为rowkey, 该属性是否需要删除?
         /**
          * 设备mac地址
          */

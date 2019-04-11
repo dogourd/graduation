@@ -69,7 +69,7 @@ public class SparkController {
     }
 
     @GetMapping("/readHbase")
-    public String readHbase() {
+    public String readHbase() throws InterruptedException {
         SparkConf sparkConf = new SparkConf().setAppName("readHbase")
                 .setMaster("local[2]")
                 .set("spark.executor.memory", "512m");
@@ -106,6 +106,7 @@ public class SparkController {
         });
 
         log.debug("final builder is " + builder.toString());
+        Thread.sleep(2000L);
         sparkContext.stop();
         return JSON.toJSONString(builder.toString());
     }

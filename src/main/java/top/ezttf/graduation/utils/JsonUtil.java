@@ -124,7 +124,6 @@ public class JsonUtil {
         }
     }
 
-    @SuppressWarnings("all")
     public static <T> String obj2StrPretty(T obj) {
         if (obj == null) {
             return null;

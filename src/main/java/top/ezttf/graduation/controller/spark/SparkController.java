@@ -1,6 +1,5 @@
 package top.ezttf.graduation.controller.spark;
 
-import com.alibaba.fastjson.JSON;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
@@ -10,8 +9,15 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.regression.LabeledPoint;
+import org.apache.spark.mllib.regression.LinearRegressionModel;
+import org.apache.spark.mllib.regression.LinearRegressionWithSGD;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,6 +74,14 @@ public class SparkController {
         spark.stop();
     }
 
+
+    /**
+     * 处理warn
+     * TODO 做成定时任务
+     *
+     * @return
+     * @throws InterruptedException
+     */
     @GetMapping("/readHbase")
     public String readHbase() throws InterruptedException {
         SparkConf sparkConf = new SparkConf().setAppName("readHbase")
@@ -83,31 +97,84 @@ public class SparkController {
                         ImmutableBytesWritable.class,
                         Result.class
                 );
-        long count = hbaseRDD.count();
-        log.info("count: {}", count);
-        StringBuilder builder = new StringBuilder();
         JavaRDD<Tuple2<ImmutableBytesWritable, Result>> javaRDD = hbaseRDD.toJavaRDD();
         javaRDD.foreach((VoidFunction<Tuple2<ImmutableBytesWritable, Result>>) immutableBytesWritableResultTuple2 -> {
-            log.debug("666");
             Result result = immutableBytesWritableResultTuple2._2();
             // 行键
             String key = Bytes.toString(result.getRow());
-            Integer value = Bytes.toInt(result.getValue(
+            // 设置id
+            String id = Bytes.toString(result.getValue(
+                    Constants.WarnTable.FAMILY_D.getBytes(),
+                    Constants.WarnTable.ID.getBytes()
+            ));
+            // 设备mac地址
+            String mmac = Bytes.toString(result.getValue(
+                    Constants.WarnTable.FAMILY_D.getBytes(),
+                    Constants.WarnTable.MMAC.getBytes()
+            ));
+            // 处理的本批数据的人数
+            int count = Bytes.toInt(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );
+            // 时间
             String time = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_T.getBytes(),
                     Constants.WarnTable.TIME.getBytes()
             ));
-            log.debug(key + ",,,,,,,,," + value + ",,,,," + time);
-            builder.append(key).append(": ").append(value.toString()).append(time).append("\n");
-            log.debug("builder is" + builder.toString());
         });
 
-        log.debug("final builder is " + builder.toString());
-        Thread.sleep(2000L);
         sparkContext.stop();
-        return JSON.toJSONString(builder.toString());
+        return null;
+    }
+
+
+    /**
+     * 测试spark 线性回归
+     *
+     * @return
+     */
+    @GetMapping("/line")
+    public String LinearRegression() {
+        SparkConf sparkConf = new SparkConf()
+                .setAppName("linear")
+                .setMaster("local[2]")
+                .set("spark.executor.memory", "512m");
+        JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
+
+        Configuration configuration = hbaseTemplate.getConfiguration();
+        configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
+
+        JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = sparkContext.newAPIHadoopRDD(
+                configuration,
+                TableInputFormat.class,
+                ImmutableBytesWritable.class,
+                Result.class
+        );
+//        JavaRDD<Object> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, Object>) v1 -> {
+//            Result result = v1._2();
+//            return Bytes.toInt(result.getValue(
+//                    Constants.WarnTable.FAMILY_I.getBytes(),
+//                    Constants.WarnTable.COUNT.getBytes())
+//            );
+//        }).cache();
+
+        JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, LabeledPoint>) v1 -> {
+            Result result = v1._2();
+            int count = Bytes.toInt(result.getValue(
+                    Constants.WarnTable.FAMILY_I.getBytes(),
+                    Constants.WarnTable.COUNT.getBytes()
+            ));
+            return new LabeledPoint(count, null);
+        }).cache();
+        LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
+        StringBuilder builder = new StringBuilder().append("weight: ")
+                .append(train.weights())
+                .append("weights.size: ")
+                .append(train.weights().size())
+                .append("result: ")
+                .append(train.predict(Vectors.dense(1)));
+
+        return builder.toString();
     }
 }

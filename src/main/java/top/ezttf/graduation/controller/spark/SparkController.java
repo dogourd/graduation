@@ -165,7 +165,7 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            return new LabeledPoint(count, null);
+            return new LabeledPoint(count, Vectors.dense(0));
         }).cache();
         LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
         StringBuilder builder = new StringBuilder().append("weight: ")

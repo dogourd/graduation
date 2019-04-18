@@ -175,9 +175,9 @@ public class SparkController {
                 .append("result: ")
                 .append(train.predict(Vectors.dense(1)));
 
-        double result = train.predict(Vectors.dense(1, 2));
+        javaRDD.foreach(builder::append);
 
 
-        return builder.append("result: ").append(result).toString();
+        return builder.toString();
     }
 }

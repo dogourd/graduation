@@ -153,14 +153,6 @@ public class SparkController {
                 ImmutableBytesWritable.class,
                 Result.class
         );
-//        JavaRDD<Object> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, Object>) v1 -> {
-//            Result result = v1._2();
-//            return Bytes.toInt(result.getValue(
-//                    Constants.WarnTable.FAMILY_I.getBytes(),
-//                    Constants.WarnTable.COUNT.getBytes())
-//            );
-//        }).cache();
-
         JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, LabeledPoint>) v1 -> {
             Result result = v1._2();
             String time = Bytes.toString(result.getValue(
@@ -171,7 +163,7 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            log.debug("{}", count);
+            log.debug("{}, {}", count, time);
             return new LabeledPoint(Instant.now().toEpochMilli(), Vectors.dense(count));
         }).cache();
         LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);

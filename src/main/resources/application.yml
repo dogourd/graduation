@@ -27,14 +27,16 @@ spring:
       hibernate.format_sql: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQL57Dialect
+#    database: mysql
   datasource:
     hikari:
       minimum-idle: 5
       maximum-pool-size: 10
       username: yuwen
       password: lyp82nlf
+#      driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql:///grad?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/grad?characterEncoding=UTF-8&serverTimezone=UTC
   data:
     hbase:
       quorum: hadoop:2181

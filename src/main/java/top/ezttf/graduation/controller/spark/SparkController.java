@@ -29,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -161,11 +162,16 @@ public class SparkController {
 
         JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, LabeledPoint>) v1 -> {
             Result result = v1._2();
+            String time = Bytes.toString(result.getValue(
+                    Constants.WarnTable.FAMILY_T.getBytes(),
+                    Constants.WarnTable.TIME.getBytes()
+            ));
             int count = Bytes.toInt(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            return new LabeledPoint(count, Vectors.dense(0));
+            log.debug("{}", count);
+            return new LabeledPoint(Instant.now().toEpochMilli(), Vectors.dense(count));
         }).cache();
         LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
         StringBuilder builder = new StringBuilder().append("weight: ")

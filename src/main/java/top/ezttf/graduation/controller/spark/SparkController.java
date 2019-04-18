@@ -29,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -159,12 +160,13 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_T.getBytes(),
                     Constants.WarnTable.TIME.getBytes()
             ));
+            long t = Timestamp.valueOf(time).getTime();
             long count = Bytes.toLong(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            log.debug("{}, {}", count, time);
-            return new LabeledPoint(Instant.now().toEpochMilli(), Vectors.dense(count));
+            log.debug("{}, {}", count, t);
+            return new LabeledPoint(t, Vectors.dense(count));
         }).cache();
         LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
         StringBuilder builder = new StringBuilder().append("weight: ")

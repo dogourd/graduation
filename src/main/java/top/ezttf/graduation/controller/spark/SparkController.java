@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -176,6 +175,9 @@ public class SparkController {
                 .append("result: ")
                 .append(train.predict(Vectors.dense(1)));
 
-        return builder.toString();
+        double result = train.predict(Vectors.dense(1, 3));
+
+
+        return builder.append("result: ").append(result).toString();
     }
 }

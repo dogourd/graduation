@@ -123,7 +123,7 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_T.getBytes(),
                     Constants.WarnTable.TIME.getBytes()
             ));
-            log.debug("", count);
+            log.debug("{}", count);
         });
 
         sparkContext.stop();

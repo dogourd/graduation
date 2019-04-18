@@ -167,7 +167,7 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_T.getBytes(),
                     Constants.WarnTable.TIME.getBytes()
             ));
-            int count = Bytes.toInt(result.getValue(
+            long count = Bytes.toLong(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));

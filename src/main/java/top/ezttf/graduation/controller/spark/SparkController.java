@@ -169,11 +169,11 @@ public class SparkController {
         }).cache();
         LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
         StringBuilder builder = new StringBuilder().append("weight: ")
-                .append(train.weights())
+                .append(train.weights()).append("\n")
                 .append("weights.size: ")
-                .append(train.weights().size())
+                .append(train.weights().size()).append("\n")
                 .append("result: ")
-                .append(train.predict(Vectors.dense(1)));
+                .append(train.predict(Vectors.dense(1))).append("\n");
 
         javaRDD.foreach(builder::append);
 

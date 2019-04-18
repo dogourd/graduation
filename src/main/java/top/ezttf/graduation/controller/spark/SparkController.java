@@ -114,7 +114,7 @@ public class SparkController {
                     Constants.WarnTable.MMAC.getBytes()
             ));
             // 处理的本批数据的人数
-            int count = Bytes.toInt(result.getValue(
+            long count = Bytes.toLong(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes())
             );

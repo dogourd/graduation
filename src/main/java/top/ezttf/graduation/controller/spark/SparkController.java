@@ -12,11 +12,9 @@ import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.LabeledPoint;
 import org.apache.spark.ml.linalg.Vector;
-import org.apache.spark.ml.linalg.Vectors;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
@@ -156,7 +154,7 @@ public class SparkController {
                 ImmutableBytesWritable.class,
                 Result.class
         );
-        JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, LabeledPoint>) v1 -> {
+        JavaRDD<double[]> javaRDD = hbaseRDD.map(v1 -> {
             Result result = v1._2();
             String time = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_T.getBytes(),
@@ -168,8 +166,22 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             log.debug("{}, {}", t, count);
-            return new LabeledPoint(t, Vectors.dense(t, count));
-        }).cache();
+            return new double[]{t, count};
+        });
+//        JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map(v1 -> {
+//            Result result = v1._2();
+//            String time = Bytes.toString(result.getValue(
+//                    Constants.WarnTable.FAMILY_T.getBytes(),
+//                    Constants.WarnTable.TIME.getBytes()
+//            ));
+//            long t = Timestamp.valueOf(time).getTime();
+//            long count = Bytes.toLong(result.getValue(
+//                    Constants.WarnTable.FAMILY_I.getBytes(),
+//                    Constants.WarnTable.COUNT.getBytes()
+//            ));
+//            log.debug("{}, {}", t, count);
+//            return new LabeledPoint(t, Vectors.dense(t, count));
+//        }).cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class).toDF("time", "count");

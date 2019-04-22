@@ -176,7 +176,7 @@ public class SparkController {
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
-        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("time").setLabelCol("count");
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("count").setLabelCol("actual");
         IsotonicRegressionModel model = isotonicRegression.fit(dataset);
 
         Vector vector = model.boundaries();

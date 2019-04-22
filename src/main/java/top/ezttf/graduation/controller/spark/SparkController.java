@@ -168,7 +168,7 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             log.debug("{}, {}", t, count);
-            return new LabeledPoint(t, Vectors.dense(count));
+            return new LabeledPoint(t, Vectors.dense(t, count));
         }).cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();

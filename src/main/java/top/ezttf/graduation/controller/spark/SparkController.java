@@ -14,6 +14,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
@@ -175,15 +176,14 @@ public class SparkController {
 //        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 
+        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
+        Dataset<Row> transform = assembler.transform(dataset);
+        Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("count").setLabelCol("actual");
-        IsotonicRegressionModel model = isotonicRegression.fit(dataset);
 
-        Vector vector = model.boundaries();
-        Vector predictions = model.predictions();
-
-        model.transform(dataset).show();
-
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
+        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
+        model.transform(datasets[1]).show();
 
         /**
          * fit 训练

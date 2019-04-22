@@ -173,6 +173,7 @@ public class SparkController {
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class).toDF("time", "count");
+        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("time").setLabelCol("count");

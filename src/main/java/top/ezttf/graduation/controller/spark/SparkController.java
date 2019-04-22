@@ -171,8 +171,8 @@ public class SparkController {
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);
         dataset.show();
-        dataset = dataset.toDF("count, time");
-        dataset.show();
+//        dataset = dataset.toDF("count, time");
+//        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 

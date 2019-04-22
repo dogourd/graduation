@@ -181,11 +181,12 @@ public class SparkController {
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
+        // FIXME 保序回归
+
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-        // FIXME 保序回归
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
         IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
         model.transform(datasets[1]).show();
@@ -195,7 +196,10 @@ public class SparkController {
         log.warn("=========================================");
 
         // FIXME 线性回归
+
+
         LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
+        linearRegression.setLabelCol("features").setFeaturesCol("count");
         LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
         linearRegressionModel.transform(datasets[1]).show();
 

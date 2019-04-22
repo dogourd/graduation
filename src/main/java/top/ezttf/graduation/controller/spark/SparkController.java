@@ -12,6 +12,7 @@ import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.regression.IsotonicRegression;
@@ -153,39 +154,27 @@ public class SparkController {
                 ImmutableBytesWritable.class,
                 Result.class
         );
-        JavaRDD<Temp> javaRDD = hbaseRDD.map(v1 -> {
+        JavaRDD<Temp> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, Temp>) v1 -> {
             Result result = v1._2();
-            String time = Bytes.toString(result.getValue(
+            String t = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_T.getBytes(),
                     Constants.WarnTable.TIME.getBytes()
             ));
-            long t = Timestamp.valueOf(time).getTime();
+            long time = Timestamp.valueOf(t).getTime();
             long count = Bytes.toLong(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            log.debug("{}, {}", t, count);
-            return new Temp(t, count);
-        });
-//        JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map(v1 -> {
-//            Result result = v1._2();
-//            String time = Bytes.toString(result.getValue(
-//                    Constants.WarnTable.FAMILY_T.getBytes(),
-//                    Constants.WarnTable.TIME.getBytes()
-//            ));
-//            long t = Timestamp.valueOf(time).getTime();
-//            long count = Bytes.toLong(result.getValue(
-//                    Constants.WarnTable.FAMILY_I.getBytes(),
-//                    Constants.WarnTable.COUNT.getBytes()
-//            ));
-//            log.debug("{}, {}", t, count);
-//            return new LabeledPoint(t, Vectors.dense(t, count));
-//        }).cache();
+            return new Temp(time, count);
+        }).cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class).toDF("time", "count");
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);
+        dataset.show();
+        dataset = dataset.toDF("time, count");
         dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
+
 
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("time").setLabelCol("count");
         IsotonicRegressionModel model = isotonicRegression.fit(dataset);
@@ -207,8 +196,4 @@ public class SparkController {
         // TODO 保序回归
     }
 
-    @GetMapping("/line2")
-    public void line2() {
-        ScalaHelper.main();
-    }
 }

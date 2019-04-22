@@ -206,4 +206,9 @@ public class SparkController {
 
         // TODO 保序回归
     }
+
+    @GetMapping("/line2")
+    public void line2() {
+        ScalaHelper.main();
+    }
 }

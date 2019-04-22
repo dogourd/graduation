@@ -17,6 +17,8 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
+import org.apache.spark.ml.regression.LinearRegression;
+import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -145,6 +147,7 @@ public class SparkController {
                 .setMaster("local[2]")
                 .set("spark.executor.memory", "512m");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
+        sparkContext.setLogLevel("WARN");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
 
@@ -177,14 +180,24 @@ public class SparkController {
 //        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 
+
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-
+        // FIXME 保序回归
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
         IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
         model.transform(datasets[1]).show();
+
+        log.warn("=========================================");
+        log.warn("=========================================");
+        log.warn("=========================================");
+
+        // FIXME 线性回归
+        LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
+        LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
+        linearRegressionModel.transform(datasets[1]).show();
 
         /**
          * fit 训练

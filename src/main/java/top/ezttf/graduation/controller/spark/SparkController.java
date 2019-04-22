@@ -14,11 +14,14 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
-import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.mllib.regression.LabeledPoint;
-import org.apache.spark.mllib.regression.LinearRegressionModel;
-import org.apache.spark.mllib.regression.LinearRegressionWithSGD;
+import org.apache.spark.ml.feature.LabeledPoint;
+import org.apache.spark.ml.linalg.Vector;
+import org.apache.spark.ml.linalg.Vectors;
+import org.apache.spark.ml.regression.IsotonicRegression;
+import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +33,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -138,15 +140,15 @@ public class SparkController {
      * @return
      */
     @GetMapping("/line")
-    public String LinearRegression() {
+    public String linearRegression() {
         SparkConf sparkConf = new SparkConf()
                 .setAppName("linear")
                 .setMaster("local[2]")
                 .set("spark.executor.memory", "512m");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
-
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
+
 
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = sparkContext.newAPIHadoopRDD(
                 configuration,
@@ -168,17 +170,27 @@ public class SparkController {
             log.debug("{}, {}", count, t);
             return new LabeledPoint(t, Vectors.dense(count));
         }).cache();
-        LinearRegressionModel train = LinearRegressionWithSGD.train(javaRDD.rdd(), 2, 0.1);
-        StringBuilder builder = new StringBuilder().append("weight: ")
-                .append(train.weights()).append("\n")
-                .append("weights.size: ")
-                .append(train.weights().size()).append("\n")
-                .append("result: ")
-                .append(train.predict(Vectors.dense(Instant.now().toEpochMilli()))).append("\n");
 
-        javaRDD.foreach(builder::append);
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class);
+
+        IsotonicRegression isotonicRegression = new IsotonicRegression();
+        IsotonicRegressionModel model = isotonicRegression.fit(dataset);
+
+        Vector vector = model.boundaries();
+        Vector predictions = model.predictions();
+
+        model.transform(dataset).show();
 
 
-        return builder.toString();
+        /**
+         * fit 训练
+         * transform 预测
+         */
+
+        return null;
+
+
+        // TODO 保序回归
     }
 }

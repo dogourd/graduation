@@ -28,11 +28,8 @@ public class One {
 
     @Test
     public void test() {
-        StringBuilder builder = new StringBuilder();
-        list.forEach(e -> {
-            builder.append(e.toString()).append(": ").append("\n");
-        });
-        log.debug(builder.toString());
+        System.out.println(1);
+        System.out.println(2 & 1);
     }
 
 }

@@ -154,7 +154,7 @@ public class SparkController {
                 ImmutableBytesWritable.class,
                 Result.class
         );
-        JavaRDD<double[]> javaRDD = hbaseRDD.map(v1 -> {
+        JavaRDD<Temp> javaRDD = hbaseRDD.map(v1 -> {
             Result result = v1._2();
             String time = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_T.getBytes(),
@@ -166,7 +166,7 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             log.debug("{}, {}", t, count);
-            return new double[]{t, count};
+            return new Temp(t, count);
         });
 //        JavaRDD<LabeledPoint> javaRDD = hbaseRDD.map(v1 -> {
 //            Result result = v1._2();

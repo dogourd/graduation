@@ -155,6 +155,7 @@ public class SparkController {
                 ImmutableBytesWritable.class,
                 Result.class
         );
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         JavaRDD<Temp> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, Temp>) v1 -> {
             Result result = v1._2();
             String t = Bytes.toString(result.getValue(
@@ -166,9 +167,8 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            return new Temp(time, count, random.nextLong());
-        }).cache().sortBy((Function<Temp, Long>) Temp::getRandom, true, 1);
+            return new Temp(time, count, random.nextDouble());
+        }).cache().sortBy((Function<Temp, Double>) Temp::getRandom, true, 1);
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);

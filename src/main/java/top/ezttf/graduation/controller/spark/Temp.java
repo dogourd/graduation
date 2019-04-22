@@ -17,5 +17,5 @@ public class Temp implements Serializable {
 
     private long time;
     private long count;
-    private long random;
+    private double random;
 }

@@ -15,7 +15,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
-import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
@@ -33,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 /**
@@ -166,8 +166,9 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            return new Temp(time, count);
-        }).cache();
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            return new Temp(time, count, random.nextLong());
+        }).cache().sortBy((Function<Temp, Long>) Temp::getRandom, true, 1);
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);

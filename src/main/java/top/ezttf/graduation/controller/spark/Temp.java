@@ -15,4 +15,5 @@ public class Temp {
 
     private long time;
     private long count;
+    private long random;
 }

@@ -15,8 +15,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
-import org.apache.spark.ml.regression.IsotonicRegression;
-import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.ml.regression.LinearRegression;
 import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.rdd.RDD;
@@ -181,15 +179,16 @@ public class SparkController {
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
-        // FIXME 保序回归
+
 
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
-        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
-        model.transform(datasets[1]).show();
+        // FIXME 保序回归
+//        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
+//        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
+//        model.transform(datasets[1]).show();
 
         log.warn("=========================================");
         log.warn("=========================================");

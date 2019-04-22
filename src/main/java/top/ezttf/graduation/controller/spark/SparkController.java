@@ -13,7 +13,6 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.VoidFunction;
-import org.apache.spark.ml.feature.LabeledPoint;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
@@ -184,7 +183,7 @@ public class SparkController {
 //        }).cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class).toDF("time", "count");
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class).toDF("time", "count");
         dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 

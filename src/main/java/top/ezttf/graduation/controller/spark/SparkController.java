@@ -167,14 +167,15 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            log.debug("{}, {}", count, t);
+            log.debug("{}, {}", t, count);
             return new LabeledPoint(t, Vectors.dense(count));
         }).cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class);
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, LabeledPoint.class).toDF("time", "count");
+        dataset.randomSplit(new double[]{0.8, 0.2});
 
-        IsotonicRegression isotonicRegression = new IsotonicRegression();
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("time").setLabelCol("count");
         IsotonicRegressionModel model = isotonicRegression.fit(dataset);
 
         Vector vector = model.boundaries();

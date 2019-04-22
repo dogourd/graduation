@@ -12,7 +12,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object ScalaHelper {
 
-  def main(): Unit = {
+  def main() = {
 
     // 本地模式运行,便于测试
     val sparkConf = new SparkConf().setMaster("local").setAppName("HBaseTest")

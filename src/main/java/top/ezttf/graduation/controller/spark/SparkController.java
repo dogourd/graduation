@@ -170,7 +170,7 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            return new Temp(time, count, random.nextDouble());
+            return new Temp((double) time, (double) count, random.nextDouble());
         }).cache().sortBy((Function<Temp, Double>) Temp::getRandom, true, 1);
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();

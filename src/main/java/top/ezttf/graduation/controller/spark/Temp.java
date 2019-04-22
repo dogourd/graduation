@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Temp implements Serializable {
 
-    private long time;
-    private long count;
+    private double time;
+    private double count;
     private double random;
 }

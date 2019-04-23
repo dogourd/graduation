@@ -28,7 +28,6 @@ import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
-import scala.collection.immutable.StringOps;
 import top.ezttf.graduation.constant.Constants;
 
 import java.io.BufferedWriter;
@@ -37,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -216,14 +216,14 @@ public class SparkController {
                 .setMaxIter(10);
         LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
         Dataset<Row> logisticResult = logisticRegressionModel.transform(datasets[1]);
+        List<Row> prediction = logisticResult.select("prediction").toJavaRDD().collect();
+        prediction.forEach(row -> {
+            Object o = row.get(0);
+            log.debug("{}", o);
+        });
         logisticResult.show();
-        Dataset<Row> prediction = logisticResult.select("prediction");
-        Row[] collect = prediction.rdd().collect();
-        String s = collect[0].toString();
-        StringOps stringOps = new StringOps(s);
-        String slice = stringOps.slice(1, stringOps.length() - 1);
 
-        return "finish...\n" + s + "\n" + slice;
+        return "finish...";
 
     }
 

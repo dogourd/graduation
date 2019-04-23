@@ -257,11 +257,11 @@ public class SparkController {
         Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
         Dataset<Row> transform = model.transform(dataset);
         transform.show();
-        StringJoiner joiner = new StringJoiner("\n");
-        transform.select("prediction").foreach(row -> {
-            joiner.add(row.get(0).toString());
-        });
-        return joiner.toString();
+//        StringJoiner joiner = new StringJoiner("\n");
+//        transform.select("prediction").foreach(row -> {
+//            joiner.add(row.get(0).toString());
+//        });
+//        return joiner.toString();
     };
 
 

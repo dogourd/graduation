@@ -256,6 +256,7 @@ public class SparkController {
         Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
+        transform.show();
         transform = model.transform(dataset);
         transform.show();
 //        StringJoiner joiner = new StringJoiner("\n");

@@ -14,6 +14,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.ml.classification.LogisticRegression;
+import org.apache.spark.ml.classification.LogisticRegressionModel;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
@@ -147,7 +149,7 @@ public class SparkController {
                 .setMaster("local[2]")
                 .set("spark.executor.memory", "512m");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
-        sparkContext.setLogLevel("WARN");
+        sparkContext.setLogLevel("ERROR");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
 
@@ -181,41 +183,41 @@ public class SparkController {
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
-
-
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
         // FIXME 保序回归
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
-        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
-        model.transform(datasets[1]).show();
+        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
+        isotonicRegressionModel.transform(datasets[1]).show();
 
         log.warn("=========================================");
         log.warn("=========================================");
         log.warn("=========================================");
 
         // FIXME 线性回归
-        //   requirement failed: Column count must be of type
-        //   struct<type:tinyint,size:int,indices:array<int>,values:array<double>>
-        //   but was actually double.
-
-
         LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
         linearRegression.setFeaturesCol("features").setLabelCol("count");
         LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
         linearRegressionModel.transform(datasets[1]).show();
 
-        /**
-         * fit 训练
-         * transform 预测
-         */
+        log.warn("=========================================");
+        log.warn("=========================================");
+        log.warn("=========================================");
+
+        // FIXME 逻辑回归
+        LogisticRegression logisticRegression = new LogisticRegression()
+                .setFeaturesCol("features")
+                .setLabelCol("count")
+                .setRegParam(0.3)
+                .setElasticNetParam(0.8)
+                .setMaxIter(10);
+        LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
+        logisticRegressionModel.transform(datasets[1]).show();
 
         return null;
 
-
-        // TODO 保序回归
     }
 
 }

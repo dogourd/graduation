@@ -14,8 +14,6 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
-import org.apache.spark.ml.classification.LogisticRegression;
-import org.apache.spark.ml.classification.LogisticRegressionModel;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
@@ -221,7 +219,7 @@ public class SparkController {
 //            Object o = row.get(0);
 //            log.debug("{}", o);
 //        });
-        logisticResult.show();
+//        logisticResult.show();
 
         return "finish...";
 

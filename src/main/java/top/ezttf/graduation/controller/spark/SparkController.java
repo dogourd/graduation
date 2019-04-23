@@ -167,7 +167,9 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             return new Temp((double) time, (double) count, random.nextDouble());
-        }).cache().sortBy((Function<Temp, Double>) Temp::getRandom, true, 1);
+        })
+        .sortBy((Function<Temp, Double>) Temp::getRandom, true, 1)
+        .cache();
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);

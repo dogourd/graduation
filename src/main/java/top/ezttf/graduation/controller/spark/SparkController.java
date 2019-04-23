@@ -48,12 +48,7 @@ import java.util.regex.Pattern;
 @RestController
 public class SparkController {
 
-    private SparkContext sparkContext = new SparkContext(
-            new SparkConf().setMaster("local[2]")
-                    .setAppName("predictionWarn")
-                    .set("spark.executor.memory", "512m")
-            .set("spark.driver.allowMultipleContexts", "true")
-    );
+
 
     private static IsotonicRegressionModel model;
 
@@ -244,6 +239,11 @@ public class SparkController {
 
     @GetMapping("/prediction")
     private String prediction() {
+        SparkContext sparkContext = new SparkContext(
+                new SparkConf().setMaster("local[2]")
+                        .setAppName("predictionWarn")
+                        .set("spark.executor.memory", "512m")
+        );
         Instant now = Instant.now();
         long start = now.toEpochMilli();
         long end = now.plus(1, ChronoUnit.HOURS).toEpochMilli();

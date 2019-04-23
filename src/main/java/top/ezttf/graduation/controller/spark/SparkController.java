@@ -257,7 +257,7 @@ public class SparkController {
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         transform.show();
-        transform = model.transform(dataset);
+        transform = model.transform(transform);
         transform.show();
 //        StringJoiner joiner = new StringJoiner("\n");
 //        transform.select("prediction").foreach(row -> {

@@ -30,17 +30,6 @@
         </encoder>
     </appender>
 
-    <appender name="warn-console" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
 
     <!-- Off these ones as they are annoying, and anyway we manage configuration ourselves -->
     <logger name="top.ezttf.graduation" level="DEBUG" additivity="false">
@@ -56,9 +45,6 @@
         <!--<appender-ref ref="console"/>-->
     </logger>
 
-    <logger name="top.ezttf.graduation.controller.spark.SparkController" level="WARN" additivity="false">
-        <appender-ref ref="warn-console"/>
-    </logger>
 
     <root level="INFO">
         <!--<appender-ref ref="flume"/>-->

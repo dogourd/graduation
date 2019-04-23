@@ -28,6 +28,7 @@ import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
+import scala.collection.immutable.StringOps;
 import top.ezttf.graduation.constant.Constants;
 
 import java.io.BufferedWriter;
@@ -214,9 +215,15 @@ public class SparkController {
                 .setElasticNetParam(0.8)
                 .setMaxIter(10);
         LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
-        logisticRegressionModel.transform(datasets[1]).show();
+        Dataset<Row> logisticResult = logisticRegressionModel.transform(datasets[1]);
+        logisticResult.show();
+        Dataset<Row> prediction = logisticResult.select("prediction");
+        Row[] collect = prediction.rdd().collect();
+        String s = collect[0].toString();
+        StringOps stringOps = new StringOps(s);
+        String slice = stringOps.slice(1, stringOps.length() - 1);
 
-        return "finish...";
+        return "finish...\n" + s + "\n" + slice;
 
     }
 

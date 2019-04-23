@@ -15,6 +15,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
+import org.apache.spark.ml.regression.IsotonicRegression;
+import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -172,7 +174,7 @@ public class SparkController {
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);
-        dataset.sort("random").show();
+        dataset = dataset.sort("random");
 //        dataset = dataset.toDF("count, time");
 //        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
@@ -182,13 +184,13 @@ public class SparkController {
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-        datasets[0].show((int) datasets[0].count());
+//        datasets[0].show((int) datasets[0].count());
 //        datasets[1].show((int) datasets[1].count());
 
         // FIXME 保序回归
-//        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
-//        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
-//        isotonicRegressionModel.transform(datasets[1]).show();
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
+        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
+        isotonicRegressionModel.transform(datasets[1]).show();
 
         log.warn("=========================================");
         log.warn("=========================================");

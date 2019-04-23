@@ -14,6 +14,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.ml.classification.LogisticRegression;
+import org.apache.spark.ml.classification.LogisticRegressionModel;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
@@ -209,20 +211,20 @@ public class SparkController {
         log.warn("=========================================");
 
         // FIXME 逻辑回归
-//        LogisticRegression logisticRegression = new LogisticRegression()
-//                .setFeaturesCol("features")
-//                .setLabelCol("count")
-//                .setRegParam(0.3)
-//                .setElasticNetParam(0.8)
-//                .setMaxIter(10);
-//        LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
-//        Dataset<Row> logisticResult = logisticRegressionModel.transform(datasets[1]);
+        LogisticRegression logisticRegression = new LogisticRegression()
+                .setFeaturesCol("features")
+                .setLabelCol("count")
+                .setRegParam(0.3)
+                .setElasticNetParam(0.8)
+                .setMaxIter(10);
+        LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
+        Dataset<Row> logisticResult = logisticRegressionModel.transform(datasets[1]);
 //        List<Row> prediction = logisticResult.select("prediction").toJavaRDD().collect();
 //        prediction.forEach(row -> {
 //            Object o = row.get(0);
 //            log.debug("{}", o);
 //        });
-//        logisticResult.show();
+        logisticResult.show();
 
         return "finish...";
 

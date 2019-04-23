@@ -15,6 +15,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
+import org.apache.spark.ml.regression.IsotonicRegression;
+import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.ml.regression.LinearRegression;
 import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.rdd.RDD;
@@ -186,19 +188,22 @@ public class SparkController {
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
         // FIXME 保序回归
-//        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
-//        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
-//        model.transform(datasets[1]).show();
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
+        IsotonicRegressionModel model = isotonicRegression.fit(datasets[0]);
+        model.transform(datasets[1]).show();
 
         log.warn("=========================================");
         log.warn("=========================================");
         log.warn("=========================================");
 
         // FIXME 线性回归
+        //   requirement failed: Column count must be of type
+        //   struct<type:tinyint,size:int,indices:array<int>,values:array<double>>
+        //   but was actually double.
 
 
         LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
-        linearRegression.setLabelCol("features").setFeaturesCol("count");
+        linearRegression.setFeaturesCol("features").setLabelCol("count");
         LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
         linearRegressionModel.transform(datasets[1]).show();
 

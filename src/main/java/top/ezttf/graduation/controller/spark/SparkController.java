@@ -183,7 +183,7 @@ public class SparkController {
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
         datasets[0].show((int) datasets[0].count());
-        datasets[1].show((int) datasets[1].count());
+//        datasets[1].show((int) datasets[1].count());
 
         // FIXME 保序回归
 //        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");

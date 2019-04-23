@@ -149,7 +149,7 @@ public class SparkController {
                 .setMaster("local[2]")
                 .set("spark.executor.memory", "512m");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
-        sparkContext.setLogLevel("ERROR");
+        sparkContext.setLogLevel("WARN");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
 
@@ -216,7 +216,7 @@ public class SparkController {
         LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
         logisticRegressionModel.transform(datasets[1]).show();
 
-        return null;
+        return "finish...";
 
     }
 

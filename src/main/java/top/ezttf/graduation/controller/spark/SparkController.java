@@ -168,8 +168,7 @@ public class SparkController {
             ));
             return new Temp((double) time, (double) count, random.nextDouble());
         })
-        .sortBy((Function<Temp, Double>) Temp::getRandom, true, 1)
-        .cache();
+        .sortBy((Function<Temp, Double>) Temp::getRandom, true, 1);
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);

@@ -17,6 +17,8 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
+import org.apache.spark.ml.regression.LinearRegression;
+import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -197,10 +199,10 @@ public class SparkController {
         log.warn("=========================================");
 
         // FIXME 线性回归
-//        LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
-//        linearRegression.setFeaturesCol("features").setLabelCol("count");
-//        LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
-//        linearRegressionModel.transform(datasets[1]).show();
+        LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
+        linearRegression.setFeaturesCol("features").setLabelCol("count");
+        LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
+        linearRegressionModel.transform(datasets[1]).show();
 
         log.warn("=========================================");
         log.warn("=========================================");

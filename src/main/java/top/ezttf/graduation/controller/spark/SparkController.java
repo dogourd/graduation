@@ -1,5 +1,6 @@
 package top.ezttf.graduation.controller.spark;
 
+import com.clearspring.analytics.util.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
@@ -31,7 +32,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -42,6 +47,14 @@ import java.util.regex.Pattern;
 @Slf4j
 @RestController
 public class SparkController {
+
+    private SparkContext sparkContext = new SparkContext(
+            new SparkConf().setMaster("local[2]")
+                    .setAppName("predictionWarn")
+                    .set("spark.executor.memory", "512m")
+    );
+
+    private static IsotonicRegressionModel model;
 
     private static final Pattern pattern = Pattern.compile(" ");
 
@@ -175,8 +188,6 @@ public class SparkController {
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);
         dataset = dataset.sort("random");
-//        dataset = dataset.toDF("count, time");
-//        dataset.show();
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
@@ -184,12 +195,15 @@ public class SparkController {
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
-//        datasets[0].show((int) datasets[0].count());
-//        datasets[1].show((int) datasets[1].count());
 
         // FIXME 保序回归
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
         IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
+
+        // 缓存模型
+        model = isotonicRegressionModel;
+
+        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
         isotonicRegressionModel.transform(datasets[1]).show();
 
         log.warn("=========================================");
@@ -225,6 +239,28 @@ public class SparkController {
         return "finish...";
 
     }
+
+
+    @GetMapping("/prediction")
+    private String prediction() {
+        Instant now = Instant.now();
+        long start = now.toEpochMilli();
+        long end = now.plus(1, ChronoUnit.HOURS).toEpochMilli();
+        List<Temp> tempList = Lists.newArrayList();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (long i = start; i <= end; i += 10 * 1000) {
+            tempList.add(new Temp(i, 0, random.nextDouble()));
+        }
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext).getOrCreate();
+        Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
+        Dataset<Row> transform = model.transform(dataset);
+        transform.show();
+        StringJoiner joiner = new StringJoiner("\n");
+        transform.select("prediction").foreach(row -> {
+            joiner.add(row.get(0).toString());
+        });
+        return joiner.toString();
+    };
 
 
 }

@@ -48,6 +48,12 @@ import java.util.regex.Pattern;
 @RestController
 public class SparkController {
 
+    JavaSparkContext sparkContext = new JavaSparkContext(
+            new SparkConf().setMaster("local[2]")
+                    .setAppName("predictionWarn")
+                    .set("spark.executor.memory", "512m")
+    );
+
 
 
     private static IsotonicRegressionModel model;
@@ -149,11 +155,11 @@ public class SparkController {
      */
     @GetMapping("/line")
     public String linearRegression() {
-        SparkConf sparkConf = new SparkConf()
-                .setAppName("linear")
-                .setMaster("local[2]")
-                .set("spark.executor.memory", "512m");
-        JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
+//        SparkConf sparkConf = new SparkConf()
+//                .setAppName("linear")
+//                .setMaster("local[2]")
+//                .set("spark.executor.memory", "512m");
+//        JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
         sparkContext.setLogLevel("WARN");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
@@ -239,11 +245,6 @@ public class SparkController {
 
     @GetMapping("/prediction")
     private String prediction() {
-        SparkContext sparkContext = new SparkContext(
-                new SparkConf().setMaster("local[2]")
-                        .setAppName("predictionWarn")
-                        .set("spark.executor.memory", "512m")
-        );
         Instant now = Instant.now();
         long start = now.toEpochMilli();
         long end = now.plus(1, ChronoUnit.HOURS).toEpochMilli();
@@ -252,7 +253,7 @@ public class SparkController {
         for (long i = start; i <= end; i += 10 * 1000) {
             tempList.add(new Temp(i, 0, random.nextDouble()));
         }
-        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext).getOrCreate();
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
         Dataset<Row> transform = model.transform(dataset);
         transform.show();

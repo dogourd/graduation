@@ -254,7 +254,9 @@ public class SparkController {
         }
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
-        Dataset<Row> transform = model.transform(dataset);
+        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
+        Dataset<Row> transform = assembler.transform(dataset);
+        transform = model.transform(dataset);
         transform.show();
 //        StringJoiner joiner = new StringJoiner("\n");
 //        transform.select("prediction").foreach(row -> {

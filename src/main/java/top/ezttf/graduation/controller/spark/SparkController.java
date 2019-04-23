@@ -52,6 +52,7 @@ public class SparkController {
             new SparkConf().setMaster("local[2]")
                     .setAppName("predictionWarn")
                     .set("spark.executor.memory", "512m")
+            .set("spark.driver.allowMultipleContexts", "true")
     );
 
     private static IsotonicRegressionModel model;

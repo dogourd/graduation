@@ -167,7 +167,7 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             return new Temp((double) time, (double) count, random.nextDouble());
-        })
+        });
 
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();

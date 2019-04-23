@@ -36,7 +36,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -262,6 +261,7 @@ public class SparkController {
 //            joiner.add(row.get(0).toString());
 //        });
 //        return joiner.toString();
+        return null;
     };
 
 

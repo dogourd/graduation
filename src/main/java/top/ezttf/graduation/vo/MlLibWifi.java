@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author yuwen
@@ -17,27 +16,18 @@ import java.util.Date;
 public class MlLibWifi implements Serializable {
 
     /**
-     * 客流用户mac地址: mac
+     * 客流用户上一次停留位置: mMac
      */
-    private String mac;
+    private String lastGeo;
 
     /**
      * 客流用户当前停留位置: mMac
      */
-    private String mMac;
+    private String nowGeo;
 
     /**
-     * 时间, 用于初始化排序获取位置因果关系
-     */
-    private Date date;
-
-    /**
-     * 随机数用于分散训练集
+     * 随机数: 用于制作分散数据集
      */
     private Double random;
 
-    public MlLibWifi(String mac, String mMac) {
-        this.mac = mac;
-        this.mMac = mMac;
-    }
 }

@@ -31,6 +31,7 @@ import scala.Tuple2;
 import top.ezttf.graduation.constant.Constants;
 import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.MlLibWarn;
+import top.ezttf.graduation.vo.MlLibWifi;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -187,7 +188,7 @@ public class SparkController {
                     Constants.WarnTable.COUNT.getBytes()
             ));
             return new MlLibWarn((double) time, (double) count, random.nextDouble());
-        });
+        }).distinct();
 
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
@@ -294,34 +295,57 @@ public class SparkController {
 //        map = collect.get(0);
         System.out.println(JsonUtil.obj2StrPretty(finalMap) + collect.size());
         List<String> list = Lists.newArrayList();
-        finalMap.values().forEach(list::addAll);
+
+        // 初始化只带表头的dataSet
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+//        List<StructField> fields = Lists.newArrayList();
+//        List<String> heads = Arrays.asList("lastGeo", "nowGeo", "random");
+//        heads.forEach(head -> fields.add(DataTypes.createStructField(head, DataTypes.StringType, true)));
+//        StructType structType = DataTypes.createStructType(fields);
+        Dataset<Row> dataset = sparkSession.createDataFrame(Lists.newArrayList(), MlLibWifi.class);
+
+        finalMap.values().stream().filter(mMacs -> mMacs.size() >= 2).forEach(mMacs -> {
+            String last = StringUtils.EMPTY;
+            for (Iterator<String> iterator = mMacs.iterator(); iterator.hasNext();) {
+                String next = iterator.next();
+                if (StringUtils.equals(next, last)) {
+                    iterator.remove();
+                } else {
+                    last = next;
+                }
+            }
+            List<MlLibWifi> mlLibWifis = Lists.newArrayList();
+            for (int i = 0; i < mMacs.size() - 1; i++) {
+                String lastGeo = mMacs.get(i);
+                String nowGeo = mMacs.get(i + 1);
+                double nextDouble = random.nextDouble();
+                MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, nowGeo, nextDouble);
+                mlLibWifis.add(mlLibWifi);
+            }
+            Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
+            dataset.union(dataFrame);
+        });
         System.out.println(JsonUtil.obj2StrPretty(list));
 
-//        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-//        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWifi.class);
-//        dataset.show();
-////        dataset = dataset.groupBy("mac").sort("random");
-//        RelationalGroupedDataset groupDataSet = dataset.sort("date").groupBy("mac");
-//        groupDataSet.count().show();
-//        groupDataSet.
-//        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
-//        dataset.randomSplit(new double[]{0.8, 0.2});
-//
-//
-//        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
-//        Dataset<Row> transform = assembler.transform(dataset);
-//        Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
-//
-//
-//        // FIXME 保序回归
-//        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
-//        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
-//
-//        // 缓存模型
-//        warnModel = isotonicRegressionModel;
-//
-//        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
-//        isotonicRegressionModel.transform(datasets[1]).show();
+        dataset.show();
+        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
+        dataset.randomSplit(new double[]{0.8, 0.2});
+
+
+        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
+        Dataset<Row> transform = assembler.transform(dataset);
+        Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
+
+
+        // FIXME 保序回归
+        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("nowGeo");
+        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
+
+        // 缓存模型
+        wifiModel = isotonicRegressionModel;
+
+        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
+        isotonicRegressionModel.transform(datasets[1]).show();
 
         return JsonUtil.obj2StrPretty(collect);
     }

@@ -301,9 +301,13 @@ public class SparkController {
                 MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, nowGeo, nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }
-            System.out.println(JsonUtil.obj2StrPretty(mlLibWifis));
+//            System.out.println(JsonUtil.obj2StrPretty(mlLibWifis));
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
+            System.out.println("dataFrame=================");
+            dataFrame.show();
             dataset.union(dataFrame);
+            System.out.println("dataSet=================");
+            dataset.show();
         });
 
         dataset.show();

@@ -290,7 +290,7 @@ public class SparkController {
         List<Map<String, List<String>>> collect = javaRDD.collect();
         Map<String, List<String>> finalMap = collect.get(0);
 //        map = collect.get(0);
-        System.out.println(JsonUtil.obj2StrPretty(finalMap));
+        System.out.println(JsonUtil.obj2StrPretty(finalMap) + collect.size());
         List<String> list = Lists.newArrayList();
         finalMap.values().forEach(list::addAll);
         System.out.println(JsonUtil.obj2StrPretty(list));

@@ -1,4 +1,4 @@
-package top.ezttf.graduation.controller.spark;
+package top.ezttf.graduation.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Temp implements Serializable {
+public class MlLibWarn implements Serializable {
 
     private double time;
     private double count;

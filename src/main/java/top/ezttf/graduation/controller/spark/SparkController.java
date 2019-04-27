@@ -1,8 +1,9 @@
 package top.ezttf.graduation.controller.spark;
 
-import com.clearspring.analytics.util.Lists;
+import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -20,12 +21,15 @@ import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.RelationalGroupedDataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
 import top.ezttf.graduation.constant.Constants;
+import top.ezttf.graduation.vo.MlLibWarn;
+import top.ezttf.graduation.vo.MlLibWifi;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -47,22 +51,24 @@ import java.util.regex.Pattern;
 @RestController
 public class SparkController {
 
-    JavaSparkContext sparkContext = new JavaSparkContext(
-            new SparkConf().setMaster("local[2]")
-                    .setAppName("predictionWarn")
-                    .set("spark.executor.memory", "512m")
-    );
-
-
-
-    private static IsotonicRegressionModel model;
+//    JavaSparkContext sparkContext = new JavaSparkContext(
+//            new SparkConf().setMaster("local[2]")
+//                    .setAppName("predictionWarn")
+//                    .set("spark.executor.memory", "512m")
+//    );
 
     private static final Pattern pattern = Pattern.compile(" ");
+    private static IsotonicRegressionModel warnModel;
+    private static IsotonicRegressionModel wifiModel;
+
 
     private final HbaseTemplate hbaseTemplate;
+    private final JavaSparkContext sparkContext;
 
-    public SparkController(HbaseTemplate hbaseTemplate) {
+
+    public SparkController(HbaseTemplate hbaseTemplate, JavaSparkContext sparkContext) {
         this.hbaseTemplate = hbaseTemplate;
+        this.sparkContext = sparkContext;
     }
 
     @GetMapping("wordCount")
@@ -148,18 +154,15 @@ public class SparkController {
 
 
     /**
-     * 测试spark 线性回归
+     * 测试spark mllib回归
+     * 包含: 保序回归、线性回归、逻辑回归
      *
+     * 该方法训练的数据来源于hbase数据表'graduation:warn'
      * @return
      */
-    @GetMapping("/line")
-    public String linearRegression() {
-//        SparkConf sparkConf = new SparkConf()
-//                .setAppName("linear")
-//                .setMaster("local[2]")
-//                .set("spark.executor.memory", "512m");
-//        JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
-        sparkContext.setLogLevel("WARN");
+    @GetMapping("/trainWarn")
+    public String trainWarn() {
+//        sparkContext.setLogLevel("WARN");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
 
@@ -171,7 +174,7 @@ public class SparkController {
                 Result.class
         );
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        JavaRDD<Temp> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, Temp>) v1 -> {
+        JavaRDD<MlLibWarn> javaRDD = hbaseRDD.map((Function<Tuple2<ImmutableBytesWritable, Result>, MlLibWarn>) v1 -> {
             Result result = v1._2();
             String t = Bytes.toString(result.getValue(
                     Constants.WarnTable.FAMILY_T.getBytes(),
@@ -182,13 +185,14 @@ public class SparkController {
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()
             ));
-            return new Temp((double) time, (double) count, random.nextDouble());
+            return new MlLibWarn((double) time, (double) count, random.nextDouble());
         });
 
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, Temp.class);
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWarn.class);
         dataset = dataset.sort("random");
+        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
@@ -202,7 +206,7 @@ public class SparkController {
         IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
 
         // 缓存模型
-        model = isotonicRegressionModel;
+        warnModel = isotonicRegressionModel;
 
         // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
         isotonicRegressionModel.transform(datasets[1]).show();
@@ -242,22 +246,86 @@ public class SparkController {
     }
 
 
+    private String trainWifi() {
+
+        Configuration configuration = hbaseTemplate.getConfiguration();
+        configuration.set(TableInputFormat.INPUT_TABLE, Constants.WifiTable.TABLE_NAME);
+
+        JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = sparkContext.newAPIHadoopRDD(
+                configuration,
+                TableInputFormat.class,
+                ImmutableBytesWritable.class,
+                Result.class
+        );
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        JavaRDD<MlLibWifi> javaRDD = hbaseRDD.map(immutableBytesWritableResultTuple2 -> {
+            List<MlLibWifi> mlLibWifis = Lists.newArrayList();
+            Result result = immutableBytesWritableResultTuple2._2();
+            String mac = Bytes.toString(result.getValue(
+               Constants.WifiTable.FAMILY_U.getBytes(),
+               Constants.WifiTable.MAC.getBytes()
+            ));
+            mac = StringUtils.substring(mac, 0, mac.indexOf("-"));
+            String mMac = Bytes.toString(result.getValue(
+                    Constants.WifiTable.FAMILY_D.getBytes(),
+                    Constants.WifiTable.MMAC.getBytes()
+            ));
+            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, random.nextDouble());
+            return mlLibWifi;
+        });
+
+
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWarn.class);
+//        dataset = dataset.groupBy("mac").sort("random");
+        RelationalGroupedDataset groupDataSet = dataset.groupBy("mac");
+        groupDataSet.count().show();
+//        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
+//        dataset.randomSplit(new double[]{0.8, 0.2});
+//
+//
+//        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
+//        Dataset<Row> transform = assembler.transform(dataset);
+//        Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
+//
+//
+//        // FIXME 保序回归
+//        IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
+//        IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
+//
+//        // 缓存模型
+//        warnModel = isotonicRegressionModel;
+//
+//        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
+//        isotonicRegressionModel.transform(datasets[1]).show();
+
+        return "SUCCESS";
+    }
+    /**
+     * 该方法测试: 将训练好的结果模型缓存是否有效
+     * 测试数据为: 随机制造的warn数据
+     *
+     * 可行, 但不确定是否合适
+     * @return
+     */
     @GetMapping("/prediction")
     private String prediction() {
+        // TODO 已调通, 做定时任务5s执行?
+
         Instant now = Instant.now();
         long start = now.toEpochMilli();
         long end = now.plus(1, ChronoUnit.HOURS).toEpochMilli();
-        List<Temp> tempList = Lists.newArrayList();
+        List<MlLibWarn> mlLibWarnList = Lists.newArrayList();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (long i = start; i <= end; i += 10 * 1000) {
-            tempList.add(new Temp(i, 0, random.nextDouble()));
+            mlLibWarnList.add(new MlLibWarn(i, 0, random.nextDouble()));
         }
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(tempList, Temp.class).sort("random");
+        Dataset<Row> dataset = sparkSession.createDataFrame(mlLibWarnList, MlLibWarn.class).sort("random");
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"time"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         transform.show();
-        transform = model.transform(transform);
+        transform = warnModel.transform(transform);
         transform.show();
 //        StringJoiner joiner = new StringJoiner("\n");
 //        transform.select("prediction").foreach(row -> {
@@ -265,7 +333,9 @@ public class SparkController {
 //        });
 //        return joiner.toString();
         return null;
-    };
+    }
+
+
 
 
 }

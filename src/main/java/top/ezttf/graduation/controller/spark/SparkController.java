@@ -281,6 +281,9 @@ public class SparkController {
             );
             List<String> list = map.computeIfAbsent(mac, s -> new ArrayList<>());
             list.add(mMac);
+
+            System.out.println(JsonUtil.obj2StrPretty(list));
+            System.out.println("========================");
 //            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, date, random.nextDouble());
 //            return mlLibWifi;
             return map;

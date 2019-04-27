@@ -287,6 +287,7 @@ public class SparkController {
 //            return mlLibWifi;
             return map;
         });
+        System.out.println(JsonUtil.obj2StrPretty(map));
         List<String> list = Lists.newArrayList();
         javaRDD.foreach(dataMap -> {
             dataMap.values().forEach(list::addAll);

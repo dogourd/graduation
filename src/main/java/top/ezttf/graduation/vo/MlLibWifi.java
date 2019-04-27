@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author yuwen
@@ -26,7 +27,12 @@ public class MlLibWifi implements Serializable {
     private String mMac;
 
     /**
-     * 随机数, 用于建立分散的训练数据集
+     * 时间, 用于初始化排序获取位置因果关系
+     */
+    private Date date;
+
+    /**
+     * 随机数用于分散训练集
      */
     private Double random;
 

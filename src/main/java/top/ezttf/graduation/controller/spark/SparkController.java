@@ -1,9 +1,11 @@
 package top.ezttf.graduation.controller.spark;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -21,13 +23,13 @@ import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.RelationalGroupedDataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
 import top.ezttf.graduation.constant.Constants;
+import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.MlLibWarn;
 import top.ezttf.graduation.vo.MlLibWifi;
 
@@ -38,8 +40,7 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -156,8 +157,9 @@ public class SparkController {
     /**
      * 测试spark mllib回归
      * 包含: 保序回归、线性回归、逻辑回归
-     *
+     * <p>
      * 该方法训练的数据来源于hbase数据表'graduation:warn'
+     *
      * @return
      */
     @GetMapping("/trainWarn")
@@ -259,29 +261,45 @@ public class SparkController {
                 Result.class
         );
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        JavaRDD<MlLibWifi> javaRDD = hbaseRDD.map(immutableBytesWritableResultTuple2 -> {
+        Map<String, List<String>> map = Maps.newHashMap();
+        JavaRDD<Map<String, List<String>>> javaRDD = hbaseRDD.map(immutableBytesWritableResultTuple2 -> {
             List<MlLibWifi> mlLibWifis = Lists.newArrayList();
             Result result = immutableBytesWritableResultTuple2._2();
             String mac = Bytes.toString(result.getValue(
-               Constants.WifiTable.FAMILY_U.getBytes(),
-               Constants.WifiTable.MAC.getBytes()
+                    Constants.WifiTable.FAMILY_U.getBytes(),
+                    Constants.WifiTable.MAC.getBytes()
             ));
             mac = StringUtils.substring(mac, 0, mac.indexOf("-"));
             String mMac = Bytes.toString(result.getValue(
                     Constants.WifiTable.FAMILY_D.getBytes(),
                     Constants.WifiTable.MMAC.getBytes()
             ));
-            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, random.nextDouble());
-            return mlLibWifi;
+            Date date = DateUtils.parseDate(
+                    Bytes.toString(result.getValue(
+                            Constants.WifiTable.FAMILY_T.getBytes(),
+                            Constants.WifiTable.TIME.getBytes()
+                    )),
+                    "yyyy-MM-dd HH:mm:ss"
+            );
+            List<String> list = map.computeIfAbsent(mac, s -> new ArrayList<>());
+            list.add(mMac);
+//            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, date, random.nextDouble());
+//            return mlLibWifi;
+            return map;
         });
+        List<String> list = Lists.newArrayList();
+        javaRDD.foreach(dataMap -> {
+            dataMap.values().forEach(list::addAll);
+        });
+        System.out.println(JsonUtil.obj2StrPretty(list));
 
-
-        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWifi.class);
-        dataset.show();
-//        dataset = dataset.groupBy("mac").sort("random");
-        RelationalGroupedDataset groupDataSet = dataset.groupBy("mac");
-        groupDataSet.count().show();
+//        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+//        Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWifi.class);
+//        dataset.show();
+////        dataset = dataset.groupBy("mac").sort("random");
+//        RelationalGroupedDataset groupDataSet = dataset.sort("date").groupBy("mac");
+//        groupDataSet.count().show();
+//        groupDataSet.
 //        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
 //        dataset.randomSplit(new double[]{0.8, 0.2});
 //
@@ -303,11 +321,13 @@ public class SparkController {
 
         return "SUCCESS";
     }
+
     /**
      * 该方法测试: 将训练好的结果模型缓存是否有效
      * 测试数据为: 随机制造的warn数据
-     *
+     * <p>
      * 可行, 但不确定是否合适
+     *
      * @return
      */
     @GetMapping("/prediction")
@@ -336,8 +356,6 @@ public class SparkController {
 //        return joiner.toString();
         return null;
     }
-
-
 
 
 }

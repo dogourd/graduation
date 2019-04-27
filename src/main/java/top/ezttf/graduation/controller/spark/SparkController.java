@@ -262,7 +262,7 @@ public class SparkController {
         );
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Map<String, List<String>> map = Maps.newHashMap();
-        JavaRDD<Map<String, List<String>>> javaRDD = hbaseRDD.map(immutableBytesWritableResultTuple2 -> {
+        JavaRDD<Map<String, List<String>>> javaRDD = hbaseRDD.distinct().map(immutableBytesWritableResultTuple2 -> {
             List<MlLibWifi> mlLibWifis = Lists.newArrayList();
             Result result = immutableBytesWritableResultTuple2._2();
             String mac = Bytes.toString(result.getValue(

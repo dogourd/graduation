@@ -42,6 +42,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author yuwen
@@ -283,9 +284,10 @@ public class SparkController {
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(Lists.newArrayList(), MlLibWifi.class);
 
-        finalMap.values().stream().filter(mMacs -> mMacs.size() >= 2).forEach(mMacs -> {
+        List<List<String>> mMacList = finalMap.values().stream().filter(mMacs -> mMacs.size() >= 2).collect(Collectors.toList());
+        for (List<String> mMacs : mMacList) {
             String last = StringUtils.EMPTY;
-            for (Iterator<String> iterator = mMacs.iterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = mMacs.iterator(); iterator.hasNext(); ) {
                 String next = iterator.next();
                 if (StringUtils.equals(next, last)) {
                     iterator.remove();
@@ -301,14 +303,13 @@ public class SparkController {
                 MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, nowGeo, nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }
-//            System.out.println(JsonUtil.obj2StrPretty(mlLibWifis));
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
             System.out.println("dataFrame=================");
             dataFrame.show();
-            dataset.union(dataFrame);
+            dataset = dataset.union(dataFrame);
             System.out.println("dataSet=================");
             dataset.show();
-        });
+        }
 
         dataset.show();
         // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）

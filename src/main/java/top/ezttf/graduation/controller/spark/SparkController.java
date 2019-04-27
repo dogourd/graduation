@@ -321,7 +321,7 @@ public class SparkController {
 //        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
 //        isotonicRegressionModel.transform(datasets[1]).show();
 
-        return "SUCCESS";
+        return JsonUtil.obj2StrPretty(collect);
     }
 
     /**

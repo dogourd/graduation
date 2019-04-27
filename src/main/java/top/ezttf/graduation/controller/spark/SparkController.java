@@ -246,6 +246,7 @@ public class SparkController {
     }
 
 
+    @GetMapping("/trainWifi")
     private String trainWifi() {
 
         Configuration configuration = hbaseTemplate.getConfiguration();

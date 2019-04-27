@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -279,7 +278,6 @@ public class SparkController {
         }).distinct();
         List<Map<String, List<String>>> collect = javaRDD.collect();
         Map<String, List<String>> finalMap = collect.get(0);
-        List<String> list = Lists.newArrayList();
 
         // 初始化只带表头的dataSet
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
@@ -303,10 +301,10 @@ public class SparkController {
                 MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, nowGeo, nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }
+            System.out.println(JsonUtil.obj2StrPretty(mlLibWifis));
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
             dataset.union(dataFrame);
         });
-        System.out.println(JsonUtil.obj2StrPretty(list));
 
         dataset.show();
         // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）

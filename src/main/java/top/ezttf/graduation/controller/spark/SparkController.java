@@ -31,7 +31,6 @@ import scala.Tuple2;
 import top.ezttf.graduation.constant.Constants;
 import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.MlLibWarn;
-import top.ezttf.graduation.vo.MlLibWifi;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -262,8 +261,7 @@ public class SparkController {
         );
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Map<String, List<String>> map = Maps.newHashMap();
-        JavaRDD<Map<String, List<String>>> javaRDD = hbaseRDD.distinct().map(immutableBytesWritableResultTuple2 -> {
-            List<MlLibWifi> mlLibWifis = Lists.newArrayList();
+        JavaRDD<Map<String, List<String>>> javaRDD = hbaseRDD.map(immutableBytesWritableResultTuple2 -> {
             Result result = immutableBytesWritableResultTuple2._2();
             String mac = Bytes.toString(result.getValue(
                     Constants.WifiTable.FAMILY_U.getBytes(),

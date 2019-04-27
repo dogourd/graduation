@@ -278,6 +278,7 @@ public class SparkController {
 
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWifi.class);
+        dataset.show();
 //        dataset = dataset.groupBy("mac").sort("random");
         RelationalGroupedDataset groupDataSet = dataset.groupBy("mac");
         groupDataSet.count().show();

@@ -25,7 +25,6 @@ import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.json4s.jackson.Json;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import scala.Tuple2;
@@ -289,7 +288,7 @@ public class SparkController {
 //            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, date, random.nextDouble());
 //            return mlLibWifi;
             return map;
-        });
+        }).distinct();
         List<Map<String, List<String>>> collect = javaRDD.collect();
         Map<String, List<String>> finalMap = collect.get(0);
 //        map = collect.get(0);

@@ -21,7 +21,6 @@ import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.RelationalGroupedDataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -280,8 +279,8 @@ public class SparkController {
         Dataset<Row> dataset = sparkSession.createDataFrame(javaRDD, MlLibWifi.class);
         dataset.show();
 //        dataset = dataset.groupBy("mac").sort("random");
-        RelationalGroupedDataset groupDataSet = dataset.groupBy("mac");
-        groupDataSet.count().show();
+//        RelationalGroupedDataset groupDataSet = dataset.groupBy("mac");
+//        groupDataSet.count().show();
 //        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
 //        dataset.randomSplit(new double[]{0.8, 0.2});
 //

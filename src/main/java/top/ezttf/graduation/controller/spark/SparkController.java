@@ -302,7 +302,7 @@ public class SparkController {
                 double nextDouble = random.nextDouble();
                 MlLibWifi mlLibWifi = new MlLibWifi(
                         Double.valueOf(StringUtils.substring(lastGeo, 4)),
-                        Double.valueOf(StringUtils.substring(nowGeo, 3)),
+                        Double.valueOf(StringUtils.substring(nowGeo, 4)),
                         nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }

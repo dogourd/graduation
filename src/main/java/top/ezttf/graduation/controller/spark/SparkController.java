@@ -287,11 +287,12 @@ public class SparkController {
 //            return mlLibWifi;
             return map;
         });
-        System.out.println(JsonUtil.obj2StrPretty(map));
+        List<Map<String, List<String>>> collect = javaRDD.collect();
+        Map<String, List<String>> finalMap = collect.get(0);
+//        map = collect.get(0);
+        System.out.println(JsonUtil.obj2StrPretty(finalMap));
         List<String> list = Lists.newArrayList();
-        javaRDD.foreach(dataMap -> {
-            dataMap.values().forEach(list::addAll);
-        });
+        finalMap.values().forEach(list::addAll);
         System.out.println(JsonUtil.obj2StrPretty(list));
 
 //        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();

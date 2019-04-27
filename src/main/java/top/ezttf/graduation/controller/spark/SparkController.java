@@ -300,7 +300,10 @@ public class SparkController {
                 String lastGeo = mMacs.get(i);
                 String nowGeo = mMacs.get(i + 1);
                 double nextDouble = random.nextDouble();
-                MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, nowGeo, nextDouble);
+                MlLibWifi mlLibWifi = new MlLibWifi(
+                        Double.valueOf(StringUtils.substring(lastGeo, 4)),
+                                nowGeo,
+                                nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
@@ -312,10 +315,11 @@ public class SparkController {
         }
 
         dataset.show();
-        // TODO 全部用于训练, 而非二八分（两份测试, 八份训练）
+        // FIXME 全部用于训练, 而非二八分（两份测试, 八份训练）
         dataset.randomSplit(new double[]{0.8, 0.2});
 
 
+        // TODO 将训练集的自变量和数字对应
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataset);
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});

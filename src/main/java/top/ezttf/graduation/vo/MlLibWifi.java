@@ -16,9 +16,9 @@ import java.io.Serializable;
 public class MlLibWifi implements Serializable {
 
     /**
-     * 客流用户上一次停留位置: mMac
+     * 客流用户上一次停留位置: mMac, 模型训练需要  将mMac和数字对应, 唯一的nMac对应唯一的数字
      */
-    private String lastGeo;
+    private Double lastGeo;
 
     /**
      * 客流用户当前停留位置: mMac

@@ -273,35 +273,16 @@ public class SparkController {
                     Constants.WifiTable.FAMILY_D.getBytes(),
                     Constants.WifiTable.MMAC.getBytes()
             ));
-            Date date = DateUtils.parseDate(
-                    Bytes.toString(result.getValue(
-                            Constants.WifiTable.FAMILY_T.getBytes(),
-                            Constants.WifiTable.TIME.getBytes()
-                    )),
-                    "yyyy-MM-dd HH:mm:ss"
-            );
             List<String> list = map.computeIfAbsent(mac, s -> new ArrayList<>());
             list.add(mMac);
-
-            System.out.println(JsonUtil.obj2StrPretty(list));
-            System.out.println("========================");
-            System.out.println(JsonUtil.obj2StrPretty(map));
-//            MlLibWifi mlLibWifi = new MlLibWifi(mac, mMac, date, random.nextDouble());
-//            return mlLibWifi;
             return map;
         }).distinct();
         List<Map<String, List<String>>> collect = javaRDD.collect();
         Map<String, List<String>> finalMap = collect.get(0);
-//        map = collect.get(0);
-        System.out.println(JsonUtil.obj2StrPretty(finalMap) + collect.size());
         List<String> list = Lists.newArrayList();
 
         // 初始化只带表头的dataSet
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-//        List<StructField> fields = Lists.newArrayList();
-//        List<String> heads = Arrays.asList("lastGeo", "nowGeo", "random");
-//        heads.forEach(head -> fields.add(DataTypes.createStructField(head, DataTypes.StringType, true)));
-//        StructType structType = DataTypes.createStructType(fields);
         Dataset<Row> dataset = sparkSession.createDataFrame(Lists.newArrayList(), MlLibWifi.class);
 
         finalMap.values().stream().filter(mMacs -> mMacs.size() >= 2).forEach(mMacs -> {

@@ -302,8 +302,8 @@ public class SparkController {
                 double nextDouble = random.nextDouble();
                 MlLibWifi mlLibWifi = new MlLibWifi(
                         Double.valueOf(StringUtils.substring(lastGeo, 4)),
-                                nowGeo,
-                                nextDouble);
+                        Double.valueOf(StringUtils.substring(nowGeo, 3)),
+                        nextDouble);
                 mlLibWifis.add(mlLibWifi);
             }
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);

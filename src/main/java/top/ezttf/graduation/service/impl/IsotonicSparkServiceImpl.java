@@ -210,12 +210,13 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 //            result.show();
             result.select("prediction").foreach(row -> {
                 // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
-                list.add(Math.round((double)row.get(0)));
+                double num = (double) row.get(0);
+                list.add(Math.round(num));
             });
             System.out.println("============================");
             System.out.println(JsonUtil.obj2StrPretty(list));
             System.out.println("============================");
-            lastGeo = list.get(list.size() - 1).doubleValue();
+//            lastGeo = list.get(list.size() - 1).doubleValue();
             count++;
         } while (count < 10);
 

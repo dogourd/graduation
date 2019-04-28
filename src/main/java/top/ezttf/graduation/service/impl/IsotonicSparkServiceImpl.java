@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -199,15 +200,18 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             System.out.println("================    dataset show ============================");
             dataset.show();
 
-            Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
-                    wifiModel,
-                    dataset,
-                    new String[]{"lastGeo"},
-                    "features"
-            );
+            VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
+            Dataset<Row> transform = assembler.transform(dataset);
+            Dataset<Row> result = wifiModel.transform(transform);
+//            Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
+//                    wifiModel,
+//                    dataset,
+//                    new String[]{"lastGeo"},
+//                    "features"
+//            );
 
             System.out.println("================     result show   ===============================");
-//            result.show();
+            result.show();
             result.select("prediction").foreach(row -> {
                 // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
                 double num = (double) row.get(0);

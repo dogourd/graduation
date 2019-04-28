@@ -1,5 +1,6 @@
 package top.ezttf.graduation.controller.spark;
 
+import com.alibaba.fastjson.JSON;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -7,6 +8,8 @@ import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ezttf.graduation.service.ISparkService;
+
+import java.util.List;
 
 /**
  * @author yuwen
@@ -238,6 +241,12 @@ public class SparkController {
 ////        });
 ////        return joiner.toString();
 //        return null;
+    }
+
+    @GetMapping("/predicateWifi")
+    private String predicateWifi(double lastGeo) {
+        List<Long> longs = iSparkService.predicateWifi(lastGeo);
+        return JSON.toJSONString(longs);
     }
 
 

@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -156,6 +157,8 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         );
 
 
+        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
+        dataset = assembler.transform(dataset);
         Dataset<Row> transform = wifiModel.transform(dataset);
         transform.show();
     }

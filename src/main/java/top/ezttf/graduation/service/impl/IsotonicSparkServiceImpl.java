@@ -191,7 +191,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         do {
             MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
             SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-            Dataset<Row> dataset = sparkSession.createDataFrame(Lists.newArrayList(mlLibWifi), MlLibWifi.class);
+            Dataset<Row> dataset = sparkSession.createDataFrame(Lists.newArrayList(mlLibWifi, mlLibWifi), MlLibWifi.class);
 
             System.out.println("================    dataset show ============================");
             dataset.show();

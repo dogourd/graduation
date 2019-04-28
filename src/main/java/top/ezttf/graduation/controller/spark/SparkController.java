@@ -20,7 +20,6 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegression;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
-import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -108,21 +107,22 @@ public class SparkController {
      */
     @GetMapping("/readHbase")
     public String readHbase() throws InterruptedException {
-        SparkConf sparkConf = new SparkConf().setAppName("readHbase")
-                .setMaster("local[2]")
-                .set("spark.executor.memory", "512m");
-        SparkContext sparkContext = new SparkContext(sparkConf);
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
-        RDD<Tuple2<ImmutableBytesWritable, Result>> hbaseRDD =
-                sparkContext.newAPIHadoopRDD(
-                        configuration,
-                        TableInputFormat.class,
-                        ImmutableBytesWritable.class,
-                        Result.class
-                );
-        JavaRDD<Tuple2<ImmutableBytesWritable, Result>> javaRDD = hbaseRDD.toJavaRDD();
-        javaRDD.foreach((VoidFunction<Tuple2<ImmutableBytesWritable, Result>>) immutableBytesWritableResultTuple2 -> {
+//        RDD<Tuple2<ImmutableBytesWritable, Result>> hbaseRDD =
+//                sparkContext.newAPIHadoopRDD(
+//                        configuration,
+//                        TableInputFormat.class,
+//                        ImmutableBytesWritable.class,
+//                        Result.class
+//                );
+        JavaPairRDD<ImmutableBytesWritable, Result> hbaseRDD = sparkContext.newAPIHadoopRDD(
+                configuration,
+                TableInputFormat.class,
+                ImmutableBytesWritable.class,
+                Result.class
+        );
+        hbaseRDD.foreach((VoidFunction<Tuple2<ImmutableBytesWritable, Result>>) immutableBytesWritableResultTuple2 -> {
             Result result = immutableBytesWritableResultTuple2._2();
             // 行键
             String key = Bytes.toString(result.getRow());

@@ -33,3 +33,24 @@ create 'graduation:warn',
 {NAME => 'i', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
 {NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
 
+
+
+/**
+     * id: 设备id
+     * lat: 维度
+     * lon: 经度
+     * rate: 发送频率
+     * mmac: 设备自身mac地址
+     * time: 数据收集的时间戳
+     *
+     * tmc: 手机所连接的wifi的mac地址
+     * mac: 采集到的手机mac地址
+     * rssi:  手机信号强度
+     * range: 距离
+     * ch: 信道
+     * ts: 手机连接的wifi的ssid
+     * tc: 是否与路由器相连
+     * ds: 手机是否睡眠
+     * essidx: 历史连接的wifi ssid
+     */
+

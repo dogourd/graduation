@@ -164,7 +164,6 @@ public class SparkController {
      */
     @GetMapping("/trainWarn")
     public String trainWarn() {
-//        sparkContext.setLogLevel("WARN");
         Configuration configuration = hbaseTemplate.getConfiguration();
         configuration.set(TableInputFormat.INPUT_TABLE, Constants.WarnTable.TABLE_NAME);
 
@@ -203,7 +202,7 @@ public class SparkController {
         Dataset<Row>[] datasets = transform.randomSplit(new double[]{0.8, 0.2});
 
 
-        // FIXME 保序回归
+        // 保序回归
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("count");
         IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
 
@@ -212,36 +211,6 @@ public class SparkController {
 
         // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
         isotonicRegressionModel.transform(datasets[1]).show();
-
-        log.warn("=========================================");
-        log.warn("=========================================");
-        log.warn("=========================================");
-
-        // FIXME 线性回归
-//        LinearRegression linearRegression = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8);
-//        linearRegression.setFeaturesCol("features").setLabelCol("count");
-//        LinearRegressionModel linearRegressionModel = linearRegression.fit(datasets[0]);
-//        linearRegressionModel.transform(datasets[1]).show();   // 2019/4/23 测试 13+-1
-
-        log.warn("=========================================");
-        log.warn("=========================================");
-        log.warn("=========================================");
-
-        // FIXME 逻辑回归
-//        LogisticRegression logisticRegression = new LogisticRegression()
-//                .setFeaturesCol("features")
-//                .setLabelCol("count")
-//                .setRegParam(0.3)
-//                .setElasticNetParam(0.8)
-//                .setMaxIter(10);
-//        LogisticRegressionModel logisticRegressionModel = logisticRegression.fit(datasets[0]);
-//        Dataset<Row> logisticResult = logisticRegressionModel.transform(datasets[1]);
-//        List<Row> prediction = logisticResult.select("prediction").toJavaRDD().collect();
-//        prediction.forEach(row -> {
-//            Object o = row.get(0);
-//            log.debug("{}", o);
-//        });
-//        logisticResult.show();      // 2019/4/23 测试稳定4.0
 
         return "finish...";
 
@@ -329,6 +298,8 @@ public class SparkController {
         IsotonicRegression isotonicRegression = new IsotonicRegression().setFeaturesCol("features").setLabelCol("nowGeo");
         IsotonicRegressionModel isotonicRegressionModel = isotonicRegression.fit(datasets[0]);
 
+
+        // TODO 已调通, 预测时应考虑对prediction结果进行四舍五入
         // 缓存模型
         wifiModel = isotonicRegressionModel;
 

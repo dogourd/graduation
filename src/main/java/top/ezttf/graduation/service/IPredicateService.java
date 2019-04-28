@@ -17,15 +17,11 @@ public interface IPredicateService {
      *
      * @param model     模型
      * @param dataSet   预测集
-     * @param inputCols 自变量列
-     * @param labelCol  因变量列
      * @return 模型
      */
     Dataset<Row> isotonicRegressionTrain(
             IsotonicRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String labelCol
+            Dataset<Row> dataSet
     );
 
     /**
@@ -33,15 +29,11 @@ public interface IPredicateService {
      *
      * @param model     模型
      * @param dataSet   预测集
-     * @param inputCols 自变量列
-     * @param labelCol  因变量列
      * @return 模型
      */
     Dataset<Row> linearRegressionTrain(
             LinearRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String labelCol
+            Dataset<Row> dataSet
     );
 
     /**
@@ -49,14 +41,10 @@ public interface IPredicateService {
      *
      * @param model     模型
      * @param dataSet   预测集
-     * @param inputCols 自变量列
-     * @param labelCol  因变量列
      * @return 模型
      */
     Dataset<Row> logisticRegression(
             LogisticRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String labelCol
+            Dataset<Row> dataSet
     );
 }

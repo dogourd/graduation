@@ -1,7 +1,6 @@
 package top.ezttf.graduation.service.impl;
 
 import org.apache.spark.ml.classification.LogisticRegressionModel;
-import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.sql.Dataset;
@@ -18,34 +17,22 @@ public class PredicateServiceImpl implements IPredicateService {
     @Override
     public Dataset<Row> isotonicRegressionTrain(
             IsotonicRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String features) {
+            Dataset<Row> dataSet) {
 
-        VectorAssembler assembler = new VectorAssembler()
-                .setInputCols(inputCols).setOutputCol(features);
-        return assembler.transform(dataSet);
+        return model.transform(dataSet);
     }
 
     @Override
     public Dataset<Row> linearRegressionTrain(
             LinearRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String features) {
-        VectorAssembler assembler = new VectorAssembler()
-                .setInputCols(inputCols).setOutputCol(features);
-        return assembler.transform(dataSet);
+            Dataset<Row> dataSet) {
+        return model.transform(dataSet);
     }
 
     @Override
     public Dataset<Row> logisticRegression(
             LogisticRegressionModel model,
-            Dataset<Row> dataSet,
-            String[] inputCols,
-            String features) {
-        VectorAssembler assembler = new VectorAssembler()
-                .setInputCols(inputCols).setOutputCol(features);
-        return assembler.transform(dataSet);
+            Dataset<Row> dataSet) {
+        return model.transform(dataSet);
     }
 }

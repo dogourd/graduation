@@ -100,8 +100,6 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         );
         // 缓存模型
         warnModel = isotonicRegressionModel;
-        // 2019/4/23 测试 11~20波动不等, 与实际值有一定差距
-        isotonicRegressionModel.transform(dataset).show();
     }
 
     @Override
@@ -178,7 +176,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 warnModel,
                 dataset,
                 new String[]{"time"},
-                "features"
+                "count"
         );
         result.show();
         return result;

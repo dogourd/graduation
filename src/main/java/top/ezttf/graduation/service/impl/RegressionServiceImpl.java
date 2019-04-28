@@ -24,7 +24,7 @@ public class RegressionServiceImpl implements IRegressionService {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         IsotonicRegression regression = new IsotonicRegression().setFeaturesCol("features").setLabelCol(labelCol);
-        return regression.fit(dataSet);
+        return regression.fit(transform);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class RegressionServiceImpl implements IRegressionService {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         LinearRegression regression = new LinearRegression().setFeaturesCol("features").setLabelCol(labelCol);
-        return regression.fit(dataSet);
+        return regression.fit(transform);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class RegressionServiceImpl implements IRegressionService {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         LogisticRegression regression = new LogisticRegression().setFeaturesCol("features").setLabelCol(labelCol);
-        return regression.fit(dataSet);
+        return regression.fit(transform);
     }
 }

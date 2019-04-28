@@ -13,7 +13,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -190,39 +189,35 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         List<Long> list = Lists.newArrayList();
         int count = 0;
 
-        do {
-            MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
-            SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-            Dataset<Row> dataset = sparkSession.createDataFrame(
-                    Lists.newArrayList(mlLibWifi), MlLibWifi.class
-            ).sort("random");
+        MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
+        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+        Dataset<Row> dataset = sparkSession.createDataFrame(
+                Lists.newArrayList(mlLibWifi), MlLibWifi.class
+        ).sort("random");
 
-            System.out.println("================    dataset show ============================");
-            dataset.show();
+        System.out.println("================    dataset show ============================");
+        dataset.show();
 
-            VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
-            Dataset<Row> transform = assembler.transform(dataset);
-            Dataset<Row> result = wifiModel.transform(transform);
-//            Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
-//                    wifiModel,
-//                    dataset,
-//                    new String[]{"lastGeo"},
-//                    "features"
-//            );
+//        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
+//        Dataset<Row> transform = assembler.transform(dataset);
+//        Dataset<Row> result = wifiModel.transform(transform);
+        Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
+                wifiModel,
+                dataset,
+                new String[]{"lastGeo"},
+                "features"
+        );
 
-            System.out.println("================     result show   ===============================");
-            result.show();
-            result.select("prediction").foreach(row -> {
-                // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
-                double num = (double) row.get(0);
-                list.add(Math.round(num));
-            });
-            System.out.println("============================");
-            System.out.println(JsonUtil.obj2StrPretty(list));
-            System.out.println("============================");
-//            lastGeo = list.get(list.size() - 1).doubleValue();
-            count++;
-        } while (count < 10);
+        System.out.println("================     result show   ===============================");
+        result.show();
+        result.select("prediction").foreach(row -> {
+            // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
+            double num = (double) row.get(0);
+            list.add(Math.round(num));
+        });
+        System.out.println("============================");
+        System.out.println(JsonUtil.obj2StrPretty(list));
+        System.out.println("============================");
 
 
         return list;

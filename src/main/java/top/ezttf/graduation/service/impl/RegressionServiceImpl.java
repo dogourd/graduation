@@ -20,7 +20,10 @@ import top.ezttf.graduation.service.IRegressionService;
 public class RegressionServiceImpl implements IRegressionService {
 
     @Override
-    public IsotonicRegressionModel isotonicRegressionTrain(Dataset<Row> dataSet, String[] inputCols, String labelCol) {
+    public IsotonicRegressionModel isotonicRegressionTrain(
+            Dataset<Row> dataSet,
+            String[] inputCols,
+            String labelCol) {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         IsotonicRegression regression = new IsotonicRegression().setFeaturesCol("features").setLabelCol(labelCol);
@@ -28,7 +31,10 @@ public class RegressionServiceImpl implements IRegressionService {
     }
 
     @Override
-    public LinearRegressionModel linearRegressionTrain(Dataset<Row> dataSet, String[] inputCols, String labelCol) {
+    public LinearRegressionModel linearRegressionTrain(
+            Dataset<Row> dataSet,
+            String[] inputCols,
+            String labelCol) {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         LinearRegression regression = new LinearRegression().setFeaturesCol("features").setLabelCol(labelCol);
@@ -36,7 +42,10 @@ public class RegressionServiceImpl implements IRegressionService {
     }
 
     @Override
-    public LogisticRegressionModel logisticRegression(Dataset<Row> dataSet, String[] inputCols, String labelCol) {
+    public LogisticRegressionModel logisticRegression(
+            Dataset<Row> dataSet,
+            String[] inputCols,
+            String labelCol) {
         VectorAssembler assembler = new VectorAssembler().setInputCols(inputCols).setOutputCol("features");
         Dataset<Row> transform = assembler.transform(dataSet);
         LogisticRegression regression = new LogisticRegression().setFeaturesCol("features").setLabelCol(labelCol);

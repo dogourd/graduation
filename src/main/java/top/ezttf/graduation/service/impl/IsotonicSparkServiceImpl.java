@@ -174,7 +174,9 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
         Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
                 warnModel,
-                dataset
+                dataset,
+                new String[]{"time"},
+                "features"
         );
         result.show();
         return result;
@@ -192,7 +194,9 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             Dataset<Row> dataset = sparkSession.createDataFrame(Collections.singletonList(mlLibWifi), MlLibWifi.class);
             Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
                     wifiModel,
-                    dataset
+                    dataset,
+                    new String[]{"lastGeo"},
+                    "features"
             );
             result.select("prediction").foreach(row -> {
                 // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何

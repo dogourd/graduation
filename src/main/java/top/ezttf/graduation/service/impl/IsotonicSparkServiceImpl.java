@@ -193,12 +193,18 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
             SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
             Dataset<Row> dataset = sparkSession.createDataFrame(Collections.singletonList(mlLibWifi), MlLibWifi.class);
+
+            System.out.println("================    dataset show ============================");
+            dataset.show();
+
             Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
                     wifiModel,
                     dataset,
                     new String[]{"lastGeo"},
                     "features"
             );
+
+            System.out.println("================     result show   ===============================");
             result.show();
             result.select("prediction").foreach(row -> {
                 // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何

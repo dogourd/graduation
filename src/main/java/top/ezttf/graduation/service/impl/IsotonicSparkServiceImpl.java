@@ -23,6 +23,7 @@ import top.ezttf.graduation.index.DeviceIndex;
 import top.ezttf.graduation.service.IPredicateService;
 import top.ezttf.graduation.service.IRegressionService;
 import top.ezttf.graduation.service.ISparkService;
+import top.ezttf.graduation.utils.JsonUtil;
 import top.ezttf.graduation.vo.MlLibWarn;
 import top.ezttf.graduation.vo.MlLibWifi;
 
@@ -198,10 +199,14 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                     new String[]{"lastGeo"},
                     "features"
             );
+            result.show();
             result.select("prediction").foreach(row -> {
                 // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
                 list.add(Math.round((double)row.get(0)));
             });
+            System.out.println("============================");
+            System.out.println(JsonUtil.obj2StrPretty(list));
+            System.out.println("============================");
             lastGeo = list.get(list.size() - 1).doubleValue();
             count++;
         } while (count < 10);

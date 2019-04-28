@@ -154,6 +154,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 new String[]{"lastGeo"},
                 "nowGeo"
         );
+
+
+        Dataset<Row> transform = wifiModel.transform(dataset);
+        transform.show();
     }
 
     @Override

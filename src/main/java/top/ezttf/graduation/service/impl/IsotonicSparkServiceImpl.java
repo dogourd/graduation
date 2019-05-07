@@ -149,6 +149,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         }
         dataset = dataset.sort("random");
 
+        System.out.println("======================================");
+        dataset.show();
+        System.out.println("======================================");
+
 
         // 缓存模型
         wifiModel = iRegressionService.isotonicRegressionTrain(

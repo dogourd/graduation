@@ -168,6 +168,9 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
     @Override
     public Dataset<Row> predicateWarn() {
+        if (warnModel == null) {
+            this.trainWarn();
+        }
         Instant now = Instant.now();
         long start = now.toEpochMilli();
         // 预测一个小时范围内
@@ -194,6 +197,9 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
     @Override
     public List<Long> predicateWifi(double lastGeo) {
+        if (wifiModel == null) {
+            this.trainWifi();
+        }
         ThreadLocalRandom random = ThreadLocalRandom.current();
         List<Long> list = Lists.newArrayList();
         int count = 0;

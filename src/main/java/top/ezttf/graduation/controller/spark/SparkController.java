@@ -5,6 +5,7 @@ import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ezttf.graduation.dao.DeviceRepository;
@@ -62,6 +63,7 @@ public class SparkController {
 
 
     @GetMapping("/trainWifi")
+    @Scheduled(cron = "0 0 1 * * ?")
     private String trainWifi() {
         iSparkService.trainWifi();
         return "Success";
@@ -76,10 +78,10 @@ public class SparkController {
      * @return
      */
     @GetMapping("/predicateWarn")
+    @Scheduled(cron = "0 0 0 * * ?")
     private String prediction() {
         iSparkService.predicateWarn().show();
         return "Success";
-//        // TODO 已调通, 做定时任务5s执行?
     }
 
     @GetMapping("/predicateWifi")

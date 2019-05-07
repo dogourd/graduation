@@ -28,5 +28,4 @@ public class WarnProducer {
         kafkaTemplate.send(topic, JSON.toJSONString(warn));
     }
 
-    // TODO 将warn保存在hbase之前将warn数据投递到kafka中, spark接收kafka数据进行计算
 }

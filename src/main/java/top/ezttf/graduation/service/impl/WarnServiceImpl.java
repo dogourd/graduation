@@ -30,8 +30,6 @@ public class WarnServiceImpl implements IWarnService {
     }
 
     /**
-     * TODO 程序会在kafka的flume-topic上接收到receiveData数据, 应该
-     * 开有两个Kafka消费者组(hbase,spark)分别将数据保存到hbase(构造warn和wifi), 进行sparkStreaming计算
      * @param warn
      */
     @Override

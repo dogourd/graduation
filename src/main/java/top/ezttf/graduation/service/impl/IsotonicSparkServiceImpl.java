@@ -146,12 +146,13 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
             dataset = dataset.union(dataFrame);
+            System.out.println("======================================");
+            dataset.show();
+            System.out.println("======================================");
         }
         dataset = dataset.sort("random");
 
-        System.out.println("======================================");
-        dataset.show();
-        System.out.println("======================================");
+
 
 
         // 缓存模型

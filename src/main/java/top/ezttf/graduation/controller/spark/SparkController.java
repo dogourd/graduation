@@ -83,6 +83,9 @@ public class SparkController {
     @GetMapping("/predicateWifi")
     private List<Device> predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
+        System.out.println("========================");
+        System.out.println(longs);
+        System.out.println("========================");
         return deviceRepository.findAllById(longs);
     }
 

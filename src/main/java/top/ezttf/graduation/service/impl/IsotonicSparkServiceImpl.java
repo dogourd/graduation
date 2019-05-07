@@ -217,11 +217,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 Long id = CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num);
                 lastGeo = id.doubleValue();
             }
-
-            System.out.println("============================");
-            System.out.println(list);
-            System.out.println("============================");
         }
+        System.out.println("=========  service   ===================");
+        System.out.println(list);
+        System.out.println("============================");
         return list;
     }
 

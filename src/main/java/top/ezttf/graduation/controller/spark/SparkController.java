@@ -1,5 +1,6 @@
 package top.ezttf.graduation.controller.spark;
 
+import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -11,6 +12,7 @@ import top.ezttf.graduation.pojo.Device;
 import top.ezttf.graduation.service.ISparkService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yuwen
@@ -83,10 +85,12 @@ public class SparkController {
     @GetMapping("/predicateWifi")
     private List<Device> predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
-        System.out.println("=========  controller   ===================");
-        System.out.println(longs);
-        System.out.println("============================");
-        return deviceRepository.findAllById(longs);
+        List<Device> list = Lists.newArrayList();
+        longs.forEach(id -> {
+            Optional<Device> optional = deviceRepository.findById(id);
+            optional.ifPresent(list::add);
+        });
+        return list;
     }
 
 

@@ -27,7 +27,7 @@ public class One {
                 new Device(5L, "mMac5", "乌鲁木齐", new Date(), new Date())
         );
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(list));
+        System.out.println(objectMapper.writeValueAsString(list));
     }
 
 }

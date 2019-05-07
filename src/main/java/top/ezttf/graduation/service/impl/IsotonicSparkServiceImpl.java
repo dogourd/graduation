@@ -218,9 +218,6 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 lastGeo = id.doubleValue();
             }
         }
-        System.out.println("=========  service   ===================");
-        System.out.println(list);
-        System.out.println("============================");
         return list;
     }
 

@@ -199,6 +199,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         int count = 0;
 
         for (int i = 0; i < 5 && !list.contains((long)lastGeo); i++) {
+            list.add((long) lastGeo);
             MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
             SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
             Dataset<Row> dataset = sparkSession.createDataFrame(
@@ -210,12 +211,11 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                     new String[]{"lastGeo"},
                     "features"
             );
-            List<Row> rows = result.select("prediction").collectAsList();
+            List<Row> rows = result.select("prediction").limit(1).collectAsList();
             for (Row row : rows) {
                 double num = (double)row.get(0);
                 Long id = CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num);
                 lastGeo = id.doubleValue();
-                list.add(id);
             }
         }
         return list;

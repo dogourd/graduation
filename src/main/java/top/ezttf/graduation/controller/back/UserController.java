@@ -10,7 +10,7 @@ import top.ezttf.graduation.pojo.Device;
  * @author yuwen
  * @date 2019/4/27
  */
-@RestController("/device")
+@RestController
 public class UserController {
 
     private final DeviceIndex deviceIndex;
@@ -22,7 +22,7 @@ public class UserController {
         this.deviceIndex = deviceIndex;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/device/add")
     public String addDevice(String mMac, String geo) {
         Device device = new Device(mMac, geo);
         device = deviceRepository.save(device);

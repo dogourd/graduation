@@ -1,5 +1,6 @@
 package top.ezttf.graduation.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
@@ -139,6 +140,9 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 .stream()
                 .filter(mMacs -> mMacs.size() >= 2)
                 .collect(Collectors.toList());
+        System.out.println("======================================");
+        System.out.println(JSON.toJSONString(mMacList));
+        System.out.println("======================================");
         for (List<String> mMacs : mMacList) {
             this.distinct(mMacs);
             List<Double> ids = this.transformMMacs2Double(mMacs);
@@ -146,9 +150,6 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);
             dataset = dataset.union(dataFrame);
-            System.out.println("======================================");
-            dataset.show();
-            System.out.println("======================================");
         }
         dataset = dataset.sort("random");
 

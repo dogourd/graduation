@@ -142,10 +142,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 .collect(Collectors.toList());
         for (List<String> mMacs : mMacList) {
             this.distinct(mMacs);
+            System.out.println("======================================");
+            System.out.println(JSON.toJSONString(mMacs));
+            System.out.println("======================================");
             List<Double> ids = this.transformMMacs2Double(mMacs);
-            System.out.println("======================================");
-            System.out.println(JSON.toJSONString(ids));
-            System.out.println("======================================");
             List<MlLibWifi> mlLibWifis = this.assembleMlLibWifis(ids);
 
             Dataset<Row> dataFrame = sparkSession.createDataFrame(mlLibWifis, MlLibWifi.class);

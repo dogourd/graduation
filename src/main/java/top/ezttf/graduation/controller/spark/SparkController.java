@@ -1,12 +1,15 @@
 package top.ezttf.graduation.controller.spark;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.ezttf.graduation.index.DataTable;
+import top.ezttf.graduation.index.DeviceIndex;
 import top.ezttf.graduation.service.ISparkService;
 
 import java.util.List;
@@ -79,7 +82,11 @@ public class SparkController {
     @GetMapping("/predicateWifi")
     private String predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
-        return JSON.toJSONString(longs);
+        List<String> result = Lists.newArrayList();
+        longs.forEach(e -> {
+            result.add(DataTable.of(DeviceIndex.class).getMMacById(e));
+        });
+        return JSON.toJSONString(result);
     }
 
 

@@ -21,10 +21,12 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.stereotype.Service;
 import top.ezttf.graduation.constant.Constants;
+import top.ezttf.graduation.index.DataTable;
 import top.ezttf.graduation.index.DeviceIndex;
 import top.ezttf.graduation.service.IPredicateService;
 import top.ezttf.graduation.service.IRegressionService;
 import top.ezttf.graduation.service.ISparkService;
+import top.ezttf.graduation.utils.CommonUtils;
 import top.ezttf.graduation.vo.MlLibWarn;
 import top.ezttf.graduation.vo.MlLibWifi;
 
@@ -212,9 +214,6 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         System.out.println("================    dataset show ============================");
         dataset.show();
 
-//        VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
-//        Dataset<Row> transform = assembler.transform(dataset);
-//        Dataset<Row> result = wifiModel.transform(transform);
         Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
                 wifiModel,
                 dataset,
@@ -224,16 +223,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
 
         System.out.println("================     result show   ===============================");
         result.show();
-//        result.select("prediction").foreach(row -> {
-//            // TODO 四舍五入, 假如5.3返回5, 而数据库只有3, 4如何
-//            double num = (double) row.get(0);
-//            list.add(Math.round(num));
-//        });
-//        System.out.println("============================");
-//        System.out.println(JsonUtil.obj2StrPretty(list));
-//        System.out.println("============================");
-
-
+        result.select("prediction").foreach(row -> {
+            double num = (double) row.get(0);
+            list.add(CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num));
+        });
         return list;
     }
 

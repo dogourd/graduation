@@ -149,6 +149,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         }
         dataset = dataset.sort("random");
 
+
         // 缓存模型
         wifiModel = iRegressionService.isotonicRegressionTrain(
                 dataset,
@@ -157,6 +158,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         );
 
 
+        // todo 这边transform.show是个空dataset
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
         dataset = assembler.transform(dataset);
         Dataset<Row> transform = wifiModel.transform(dataset);

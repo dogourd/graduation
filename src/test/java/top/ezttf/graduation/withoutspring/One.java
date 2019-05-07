@@ -1,16 +1,15 @@
 package top.ezttf.graduation.withoutspring;
 
-import javafx.util.Pair;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import top.ezttf.graduation.pojo.Device;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,51 +20,14 @@ import java.util.List;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class One {
 
-    private List<Integer> list = new ArrayList<>();
-
-    @Before
-    public void setup() {
-        for (int i = 0; i < 10; i++) {
-            list.add(i);
-
-        }
-    }
-
     @Test
-    public void test() {
-        System.out.println(1);
-        System.out.println(2 & 1);
-    }
-
-    @Test
-    public void distinct() {
-        List<String> list = Arrays.asList("A", "A", "B", "A", "C", "C", "D", "A");
-        List<String> newList = new ArrayList<>(list);
-        String last = "";
-        Iterator<String> iterator = newList.iterator();
-        for (;iterator.hasNext();) {
-            String next = iterator.next();
-            if (StringUtils.equals(next, last)) {
-                iterator.remove();
-            } else {
-                last = next;
-            }
-        }
-        newList.forEach(e -> System.out.print(e + " "));
-        System.out.println();
-
-        List<Pair<String, String>> deepList = new ArrayList<>();
-        for (int i = 0; i < newList.size() - 1; i++) {
-            Pair<String, String> pair = new Pair<>(newList.get(i), newList.get(i + 1));
-            deepList.add(pair);
-        }
-    }
-
-    @Test
-    public void subString() {
-        String rowKey = "mac1-sjdklfj-sdlfk";
-        rowKey = StringUtils.substring(rowKey, 0, rowKey.indexOf("-"));
-        System.out.println(rowKey);
+    public void test() throws JsonProcessingException {
+        List<Device> list = Lists.newArrayList(
+                new Device(7L, "mMac7", "呼和浩特", new Date(), new Date()),
+                new Device(5L, "mMac5", "乌鲁木齐", new Date(), new Date())
+        );
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(list));
     }
 
 }

@@ -220,14 +220,19 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 new String[]{"lastGeo"},
                 "features"
         );
-
-        System.out.println("================     result show   ===============================");
-        result.show();
-        result.select("prediction").foreach(row -> {
+//
+//        System.out.println("================     result show   ===============================");
+//        result.show();
+//        result.select("prediction").foreach(row -> {
+//            double num = (double) row.get(0);
+//            System.out.println("=============  num  ==============");
+//            System.out.println(num);
+//            System.out.println("===========================");
+//
+//        });
+        List<Row> rows = result.select("prediction").collectAsList();
+        rows.forEach(row -> {
             double num = (double) row.get(0);
-            System.out.println("=============  num  ==============");
-            System.out.println(num);
-            System.out.println("===========================");
             list.add(CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num));
         });
         System.out.println("============  list  ===============");

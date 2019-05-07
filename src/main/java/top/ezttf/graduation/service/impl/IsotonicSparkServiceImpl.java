@@ -225,8 +225,14 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         result.show();
         result.select("prediction").foreach(row -> {
             double num = (double) row.get(0);
+            System.out.println("=============  num  ==============");
+            System.out.println(num);
+            System.out.println("===========================");
             list.add(CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num));
         });
+        System.out.println("============  list  ===============");
+        System.out.println(list);
+        System.out.println("===========================");
         return list;
     }
 

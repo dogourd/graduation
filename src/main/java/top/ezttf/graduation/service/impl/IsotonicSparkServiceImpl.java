@@ -154,19 +154,12 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             dataset = dataset.union(dataFrame);
         }
         dataset = dataset.sort("random");
-
-
-
-
         // 缓存模型
         wifiModel = iRegressionService.isotonicRegressionTrain(
                 dataset,
                 new String[]{"lastGeo"},
                 "nowGeo"
         );
-
-
-        // todo 这边transform.show是个空dataset
         VectorAssembler assembler = new VectorAssembler().setInputCols(new String[]{"lastGeo"}).setOutputCol("features");
         dataset = assembler.transform(dataset);
         Dataset<Row> transform = wifiModel.transform(dataset);
@@ -205,39 +198,26 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         List<Long> list = Lists.newArrayList();
         int count = 0;
 
-        MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
-        SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
-        Dataset<Row> dataset = sparkSession.createDataFrame(
-                Lists.newArrayList(mlLibWifi), MlLibWifi.class
-        ).sort("random");
-
-        System.out.println("================    dataset show ============================");
-        dataset.show();
-
-        Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
-                wifiModel,
-                dataset,
-                new String[]{"lastGeo"},
-                "features"
-        );
-//
-//        System.out.println("================     result show   ===============================");
-//        result.show();
-//        result.select("prediction").foreach(row -> {
-//            double num = (double) row.get(0);
-//            System.out.println("=============  num  ==============");
-//            System.out.println(num);
-//            System.out.println("===========================");
-//
-//        });
-        List<Row> rows = result.select("prediction").collectAsList();
-        rows.forEach(row -> {
-            double num = (double) row.get(0);
-            list.add(CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num));
-        });
-        System.out.println("============  list  ===============");
-        System.out.println(list);
-        System.out.println("===========================");
+        for (int i = 0; i < 5 && !list.contains((long)lastGeo); i++) {
+            MlLibWifi mlLibWifi = new MlLibWifi(lastGeo, 0d, random.nextDouble());
+            SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
+            Dataset<Row> dataset = sparkSession.createDataFrame(
+                    Lists.newArrayList(mlLibWifi), MlLibWifi.class
+            ).sort("random");
+            Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
+                    wifiModel,
+                    dataset,
+                    new String[]{"lastGeo"},
+                    "features"
+            );
+            List<Row> rows = result.select("prediction").collectAsList();
+            for (Row row : rows) {
+                double num = (double)row.get(0);
+                Long id = CommonUtils.searchElement(DataTable.of(DeviceIndex.class).getIds(), (long) num);
+                lastGeo = id.doubleValue();
+                list.add(id);
+            }
+        }
         return list;
     }
 

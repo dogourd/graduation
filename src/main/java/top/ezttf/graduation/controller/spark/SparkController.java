@@ -1,15 +1,13 @@
 package top.ezttf.graduation.controller.spark;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.regression.IsotonicRegressionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.ezttf.graduation.index.DataTable;
-import top.ezttf.graduation.index.DeviceIndex;
+import top.ezttf.graduation.dao.DeviceRepository;
+import top.ezttf.graduation.pojo.Device;
 import top.ezttf.graduation.service.ISparkService;
 
 import java.util.List;
@@ -31,15 +29,18 @@ public class SparkController {
     private final HbaseTemplate hbaseTemplate;
     private final JavaSparkContext sparkContext;
     private final ISparkService iSparkService;
+    private final DeviceRepository deviceRepository;
 
 
     public SparkController(
             HbaseTemplate hbaseTemplate,
             JavaSparkContext sparkContext,
-            ISparkService iSparkService) {
+            ISparkService iSparkService,
+            DeviceRepository deviceRepository) {
         this.hbaseTemplate = hbaseTemplate;
         this.sparkContext = sparkContext;
         this.iSparkService = iSparkService;
+        this.deviceRepository = deviceRepository;
     }
 
 
@@ -80,16 +81,9 @@ public class SparkController {
     }
 
     @GetMapping("/predicateWifi")
-    private String predicateWifi(double lastGeo) {
+    private List<Device> predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
-        System.out.println("===========================");
-        System.out.println(longs);
-        System.out.println("===========================");
-        List<String> result = Lists.newArrayList();
-        longs.forEach(e -> {
-            result.add(DataTable.of(DeviceIndex.class).getMMacById(e));
-        });
-        return JSON.toJSONString(result);
+        return deviceRepository.findAllById(longs);
     }
 
 

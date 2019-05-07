@@ -17,6 +17,7 @@ public class DeviceIndex implements IIndexAware<String, Long> {
 
     @Override
     public Long get(String key) {
+        log.info("DeviceIndex, the key set is {}", map);
         return map.get(key);
     }
 

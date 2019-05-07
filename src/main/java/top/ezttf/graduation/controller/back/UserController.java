@@ -1,6 +1,7 @@
 package top.ezttf.graduation.controller.back;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.ezttf.graduation.dao.DeviceRepository;
 import top.ezttf.graduation.index.DeviceIndex;
@@ -11,6 +12,7 @@ import top.ezttf.graduation.pojo.Device;
  * @date 2019/4/27
  */
 @RestController
+@RequestMapping(value = "/device")
 public class UserController {
 
     private final DeviceIndex deviceIndex;
@@ -22,7 +24,7 @@ public class UserController {
         this.deviceIndex = deviceIndex;
     }
 
-    @PostMapping("/device/add")
+    @PostMapping("/add")
     public String addDevice(String mMac, String geo) {
         Device device = new Device(mMac, geo);
         device = deviceRepository.save(device);
@@ -30,6 +32,7 @@ public class UserController {
         return "添加成功";
     }
 
+    @PostMapping("/del")
     public String removeDevice(String mMac) {
         Device device = deviceRepository.findByMMac(mMac);
         if (device != null) {

@@ -21,6 +21,11 @@ public class DeviceIndex implements IIndexAware<String, Long> {
         return map.get(key);
     }
 
+    /**
+     * nMac 2 primary key
+     * @param key Key
+     * @param value value
+     */
     @Override
     public void add(String key, Long value) {
         log.info("DeviceIndex, before add the key set is {}", map.keySet());

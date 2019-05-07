@@ -82,6 +82,9 @@ public class SparkController {
     @GetMapping("/predicateWifi")
     private String predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
+        System.out.println("===========================");
+        System.out.println(longs);
+        System.out.println("===========================");
         List<String> result = Lists.newArrayList();
         longs.forEach(e -> {
             result.add(DataTable.of(DeviceIndex.class).getMMacById(e));

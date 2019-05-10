@@ -1,9 +1,7 @@
 package top.ezttf.graduation.service;
 
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuwen
@@ -25,7 +23,7 @@ public interface ISparkService {
      * 预测warn
      * @return dataset
      */
-    Dataset<Row> predicateWarn();
+    Map<String, Double> predicateWarn();
 
     /**
      * 预测wifi

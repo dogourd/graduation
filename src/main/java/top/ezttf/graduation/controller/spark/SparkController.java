@@ -13,6 +13,7 @@ import top.ezttf.graduation.pojo.Device;
 import top.ezttf.graduation.service.ISparkService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -79,9 +80,9 @@ public class SparkController {
      */
     @GetMapping("/predicateWarn")
     @Scheduled(cron = "0 0 0 * * ?")
-    private String prediction() {
-        iSparkService.predicateWarn().show();
-        return "Success";
+    private Map<String, Double> prediction() {
+        Map<String, Double> map = iSparkService.predicateWarn();
+        return map;
     }
 
     @GetMapping("/predicateWifi")

@@ -192,6 +192,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 new String[]{"time"},
                 "features"
         );
+        result = result.sort("time");
         result.show();
         List<Row> rows = result.select("time", "prediction").collectAsList();
         Map<String, Double> map = Maps.newLinkedHashMap();

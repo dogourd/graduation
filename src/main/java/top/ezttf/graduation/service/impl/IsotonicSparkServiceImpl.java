@@ -11,7 +11,6 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.http.client.utils.DateUtils;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -31,8 +30,8 @@ import top.ezttf.graduation.utils.CommonUtils;
 import top.ezttf.graduation.vo.MlLibWarn;
 import top.ezttf.graduation.vo.MlLibWifi;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -196,9 +195,10 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         result.show();
         List<Row> rows = result.select("time", "prediction").collectAsList();
         Map<String, Double> map = Maps.newLinkedHashMap();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         for (Row row : rows) {
-            Date date = row.getDate(0);
-            String time = DateUtils.formatDate(date, "HH:mm:ss");
+            double rowDouble = row.getDouble(0);
+            String time = format.format(rowDouble);
             double prediction = row.getDouble(1);
             map.put(time, prediction);
         }

@@ -1,6 +1,5 @@
 package top.ezttf.graduation.service;
 
-import org.apache.catalina.LifecycleState;
 import top.ezttf.graduation.vo.Wifi;
 
 import java.util.List;

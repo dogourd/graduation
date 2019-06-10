@@ -3,6 +3,7 @@ package top.ezttf.graduation.withoutspring;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,9 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import top.ezttf.graduation.pojo.Device;
 
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuwen
@@ -28,6 +31,15 @@ public class One {
         );
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(list));
+    }
+
+    @Test
+    public void testMap() {
+        Map<String, String> map = Maps.newHashMap();
+        map.put(null, null);
+
+        map = new Hashtable<>();
+        map.put("1", "1");
     }
 
 }

@@ -12,11 +12,6 @@ Nginx           1.15.4
 Redis           4.0.11
 
 
-/**
- * create 'pb:passtemplate',
- * {NAME => 'b', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
- * {NAME => 'c', VERSIONS => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
- */
 
 
 
@@ -28,10 +23,20 @@ create 'graduation:wifi',
 {NAME => 'u', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
 {NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
 
+create 'wifi',
+{NAME => 'd', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 'u', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 't', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
+
 create 'graduation:warn',
 {NAME => 'd', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
 {NAME => 'i', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
 {NAME => 't', VERSION => '1', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
+
+create 'warn',
+{NAME => 'd', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 'i', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'},
+{NAME => 't', VERSION => '3', TTL => '2147483647', 'BLOOMFILTER' => 'ROW'}
 
 
 

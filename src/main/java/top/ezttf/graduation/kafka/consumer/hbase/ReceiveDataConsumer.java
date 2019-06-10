@@ -39,16 +39,11 @@ public class ReceiveDataConsumer {
      * @param record
      */
     // TODO 放开注释
-    //@KafkaListener(
-    //        //id = "flume-listener",
-    //        topics = "${project.kafka.flume-topic}",
-    //        //clientIdPrefix = "${spring.kafka.consumer.client-id}",
-    //        groupId = "${spring.kafka.consumer.group-id}"
-    //        //containerFactory = "flumeKafkaListenerContainerFactory"
-    //)
-    public void consumer(
-            ConsumerRecord<?, ?> record
-    ) {
+//    @KafkaListener(
+//            topics = "${project.kafka.flume-topic}",
+//            groupId = "${spring.kafka.consumer.group-id}"
+//    )
+    public void consumer(ConsumerRecord<?, ?> record) {
         Optional<?> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
             String message = kafkaMessage.get().toString();

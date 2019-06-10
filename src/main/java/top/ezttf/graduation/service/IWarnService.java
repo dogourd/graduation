@@ -1,6 +1,5 @@
 package top.ezttf.graduation.service;
 
-import top.ezttf.graduation.vo.ReceiveData;
 import top.ezttf.graduation.vo.Warn;
 
 /**

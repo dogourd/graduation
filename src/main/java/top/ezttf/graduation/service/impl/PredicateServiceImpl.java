@@ -16,7 +16,7 @@ import top.ezttf.graduation.service.IPredicateService;
 @Service
 public class PredicateServiceImpl implements IPredicateService {
     @Override
-    public Dataset<Row> isotonicRegressionTrain(
+    public Dataset<Row> isotonicRegressionPredicate(
             IsotonicRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,
@@ -27,7 +27,7 @@ public class PredicateServiceImpl implements IPredicateService {
     }
 
     @Override
-    public Dataset<Row> linearRegressionTrain(
+    public Dataset<Row> linearRegressionPredicate(
             LinearRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,
@@ -38,7 +38,7 @@ public class PredicateServiceImpl implements IPredicateService {
     }
 
     @Override
-    public Dataset<Row> logisticRegression(
+    public Dataset<Row> logisticRegressionPredicate(
             LogisticRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,

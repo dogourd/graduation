@@ -1,22 +1,10 @@
 server:
   port: 8023
 spring:
-  messages:
-    encoding: UTF-8
-  http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
   application:
     name: graduation
   kafka:
     bootstrap-servers: hadoop:9092
-#    consumer:
-#      group-id: flume-kafka-group
-#      client-id: flume-kafka-consumer
-#      auto-offset-reset: latest
-#      enable-auto-commit: false
     producer:
       retries: 3
   jpa:
@@ -27,16 +15,15 @@ spring:
       hibernate.format_sql: true
     open-in-view: false
     database-platform: org.hibernate.dialect.MySQL57Dialect
-#    database: mysql
   datasource:
     hikari:
       minimum-idle: 5
       maximum-pool-size: 10
       username: yuwen
       password: lyp82nlf
-#      driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/grad?characterEncoding=UTF-8&serverTimezone=UTC
+#    url: jdbc:mysql://hadoop:3306/grad?characterEncoding=UTF-8&serverTimezone=UTC
+      url: jdbc:mysql://127.0.0.1:3306/grad?characterEncoding=UTF-8&serverTimezone=UTC
   data:
     hbase:
       quorum: hadoop:2181
@@ -50,19 +37,19 @@ logging:
 project:
   kafka:
     flume-topic: flume-topic
-    warn-topic: warn-topic
-  hbase:
-    zookeeper:
-      quorum: hadoop
-      property:
-        port: 2181
-  zookeeper:
-    znode:
-      parent: /hbase
-  mysql:
-    host: 127.0.0.1
-    port: 3306
-    username: yuwen
-    password: lyp82nlf
-    binlogName:
-    position: -1
+#    warn-topic: warn-topic
+#  hbase:
+#    zookeeper:
+#      quorum: hadoop
+#      property:
+#        port: 2181
+#  zookeeper:
+#    znode:
+#      parent: /hbase
+#  mysql:
+#    host: 127.0.0.1
+#    port: 3306
+#    username: yuwen
+#    password: lyp82nlf
+#    binlogName:
+#    position: -1

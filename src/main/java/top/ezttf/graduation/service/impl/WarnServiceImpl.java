@@ -2,6 +2,7 @@ package top.ezttf.graduation.service.impl;
 
 import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -14,13 +15,17 @@ import top.ezttf.graduation.utils.RowKeyGenUtil;
 import top.ezttf.graduation.vo.Warn;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author yuwen
  * @date 2019/3/21
  */
+@Slf4j
 @Service
 public class WarnServiceImpl implements IWarnService {
+
+    private AtomicLong num = new AtomicLong(0L);
 
     private final HbaseTemplate hbaseTemplate;
 
@@ -53,6 +58,7 @@ public class WarnServiceImpl implements IWarnService {
         put.addColumn(FAMILY_T, TIME, Bytes.toBytes(DateUtils.formatDate(warn.getTime(), pattern)));
         datas.add(put);
         hbaseTemplate.saveOrUpdates(Constants.WarnTable.TABLE_NAME, datas);
+        log.debug("warn count: {}", num.incrementAndGet());
     }
 
 

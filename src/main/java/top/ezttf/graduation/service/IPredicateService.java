@@ -21,7 +21,7 @@ public interface IPredicateService {
      * @param features  features
      * @return 模型
      */
-    Dataset<Row> isotonicRegressionTrain(
+    Dataset<Row> isotonicRegressionPredicate(
             IsotonicRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,
@@ -37,7 +37,7 @@ public interface IPredicateService {
      * @param features  features
      * @return 模型
      */
-    Dataset<Row> linearRegressionTrain(
+    Dataset<Row> linearRegressionPredicate(
             LinearRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,
@@ -53,7 +53,7 @@ public interface IPredicateService {
      * @param features  features
      * @return 模型
      */
-    Dataset<Row> logisticRegression(
+    Dataset<Row> logisticRegressionPredicate(
             LogisticRegressionModel model,
             Dataset<Row> dataSet,
             String[] inputCols,

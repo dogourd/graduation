@@ -175,18 +175,20 @@ public class IsotonicSparkServiceImpl implements ISparkService {
         Instant now = Instant.now();
         long start = now.toEpochMilli();
         // 预测一个小时范围内
-        long end = now.plus(1, ChronoUnit.HOURS).toEpochMilli();
+        // 预测一天范围内
+        long end = now.plus(1, ChronoUnit.DAYS).toEpochMilli();
         List<MlLibWarn> mlLibWarnList = Lists.newArrayList();
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
         // 五分钟一条数据(对应dataset的一行)
-        for (long i = start; i <= end; i += 5 * 60 * 1000) {
+        // 一小时一条数据
+        for (long i = start; i <= end; i += 60 * 60 * 1000) {
             mlLibWarnList.add(new MlLibWarn(i, 0d, random.nextDouble()));
         }
         SparkSession sparkSession = SparkSession.builder().sparkContext(sparkContext.sc()).getOrCreate();
         Dataset<Row> dataset = sparkSession.createDataFrame(mlLibWarnList, MlLibWarn.class).sort("random");
 
-        Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
+        Dataset<Row> result = iPredicateService.isotonicRegressionPredicate(
                 warnModel,
                 dataset,
                 new String[]{"time"},
@@ -222,7 +224,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             Dataset<Row> dataset = sparkSession.createDataFrame(
                     Lists.newArrayList(mlLibWifi), MlLibWifi.class
             ).sort("random");
-            Dataset<Row> result = iPredicateService.isotonicRegressionTrain(
+            Dataset<Row> result = iPredicateService.isotonicRegressionPredicate(
                     wifiModel,
                     dataset,
                     new String[]{"lastGeo"},

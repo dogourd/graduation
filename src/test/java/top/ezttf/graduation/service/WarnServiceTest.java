@@ -18,9 +18,11 @@ import top.ezttf.graduation.mapper.WarnRowMapper;
 import top.ezttf.graduation.vo.ReceiveData;
 import top.ezttf.graduation.vo.UserInfo;
 import top.ezttf.graduation.vo.Warn;
+import top.ezttf.graduation.vo.Wifi;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -36,25 +38,47 @@ public class WarnServiceTest {
     private IWarnService iWarnService;
 
     @Autowired
+    private IWifiService iWifiService;
+
+    @Autowired
     private HbaseTemplate hbaseTemplate;
+
+    private static String[] deviceIds;
+
+    static {
+        // 模拟 10 个探针
+        deviceIds = new String[10];
+        for (int i = 0; i < deviceIds.length; i++) {
+            // 生成随机 设备id
+            deviceIds[i] = UUID.randomUUID().toString();
+        }
+    }
 
     @Test
     public void testSaveOrUpdates() {
 
         log.debug("{}", new Date());
-        for (int i = 0; i < 40; i++) {
+        // 录 1w 条数据
+        for (int i = 0; i < 10000; i++) {
+            // 随机生成人流量大小 40以内
             int listSize = ThreadLocalRandom.current().nextInt(0, 40);
             List<UserInfo> list = Lists.newArrayList();
             for (int j = 0; j < listSize; j++) {
+                // 生成随机信道值 20以内
                 int element = ThreadLocalRandom.current().nextInt(20);
                 UserInfo userInfo = new UserInfo();
                 userInfo.setCh(element);
                 list.add(userInfo);
-                ReceiveData receiveData = new ReceiveData("id", list,
-                        "mmac", 2,
-                        DateUtils.addDays(new Date(), 1), "lat", "lon");
+                int deviceIdIndex = ThreadLocalRandom.current().nextInt(0, 10);
+                // 每次将收集时间推迟 9 秒
+                //
+                ReceiveData receiveData = new ReceiveData(deviceIds[deviceIdIndex], list,
+                        deviceIds[deviceIdIndex], 2,
+                        DateUtils.addSeconds(new Date(), 9), "lat", "lon");
                 Warn warn = Warn.assembleFromReceiveData(receiveData);
+                List<Wifi> wifiList = Wifi.createWifisFromData(receiveData);
                 iWarnService.saveWarn(warn);
+                iWifiService.saveWifis(wifiList);
             }
         }
 

@@ -57,6 +57,7 @@ public class SparkController {
      * @return
      */
     @GetMapping("/trainWarn")
+    @Scheduled(cron = "0 0 0 * * ?")
     public String trainWarn() {
         iSparkService.trainWarn();
         return "Success";
@@ -79,7 +80,6 @@ public class SparkController {
      * @return
      */
     @GetMapping("/predicateWarn")
-    @Scheduled(cron = "0 0 0 * * ?")
     private Map<String, Double> prediction() {
         Map<String, Double> map = iSparkService.predicateWarn();
         return map;

@@ -26,7 +26,7 @@ public class RowKeyGenUtil {
                 .add(wifi.getMac())
                 .add(DateUtils.formatDate(wifi.getTime()))
                 .toString();
-        log.info("GenWifiRowKey: {}, {}", wifi, rowKey);
+//        log.info("GenWifiRowKey: {}", rowKey);
         return rowKey;
     }
 
@@ -40,7 +40,7 @@ public class RowKeyGenUtil {
                 .add(warn.getMmac())
                 .add(Instant.now().toString())
                 .toString();
-        log.info("GenWarnRowKey: {}, {}", warn, rowKey);
+//        log.info("GenWarnRowKey: {}", rowKey);
         return rowKey;
     }
 }

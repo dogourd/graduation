@@ -2,11 +2,11 @@ package top.ezttf.graduation.service.impl;
 
 import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.http.client.utils.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.ezttf.graduation.constant.Constants;
 import top.ezttf.graduation.service.IWifiService;
@@ -14,13 +14,17 @@ import top.ezttf.graduation.utils.RowKeyGenUtil;
 import top.ezttf.graduation.vo.Wifi;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author yuwen
  * @date 2019/3/21
  */
+@Slf4j
 @Service
 public class WifiServiceImpl implements IWifiService {
+
+    private AtomicLong num = new AtomicLong(0L);
 
     private final HbaseTemplate hbaseTemplate;
 
@@ -52,5 +56,6 @@ public class WifiServiceImpl implements IWifiService {
             datas.add(put);
         });
         hbaseTemplate.saveOrUpdates(Constants.WifiTable.TABLE_NAME, datas);
+        log.info("wifi count: {}", num.addAndGet(wifis.size()));
     }
 }

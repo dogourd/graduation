@@ -33,6 +33,8 @@ import top.ezttf.graduation.vo.MlLibWifi;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -87,6 +89,14 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                     Constants.WarnTable.TIME.getBytes()
             ));
             long time = Timestamp.valueOf(t).getTime();
+            LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(time, 0, ZoneOffset.UTC);
+            int hour = localDateTime.getHour();
+            int min = localDateTime.getMinute();
+            int sec = localDateTime.getSecond();
+            time = 1000 * 3600 * hour +
+                    1000 * 60 * min +
+                    1000 * sec +
+                    ThreadLocalRandom.current().nextInt(0, 1000);
             long count = Bytes.toLong(result.getValue(
                     Constants.WarnTable.FAMILY_I.getBytes(),
                     Constants.WarnTable.COUNT.getBytes()

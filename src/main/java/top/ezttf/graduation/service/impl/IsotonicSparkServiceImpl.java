@@ -242,6 +242,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                     new String[]{"lastGeo"},
                     "features"
             );
+            result.show();
             List<Row> rows = result.select("prediction").limit(1).collectAsList();
             for (Row row : rows) {
                 double num = (double)row.get(0);

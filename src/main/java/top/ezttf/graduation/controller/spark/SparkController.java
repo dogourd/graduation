@@ -1,5 +1,6 @@
 package top.ezttf.graduation.controller.spark;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -82,12 +83,14 @@ public class SparkController {
     @GetMapping("/predicateWarn")
     private Map<String, Double> prediction() {
         Map<String, Double> map = iSparkService.predicateWarn();
+        log.info("预测结果: {}", JSON.toJSONString(map));
         return map;
     }
 
     @GetMapping("/predicateWifi")
     private List<Device> predicateWifi(double lastGeo) {
         List<Long> longs = iSparkService.predicateWifi(lastGeo);
+        log.info("预测id结果:{}", JSON.toJSONString(longs));
         List<Device> list = Lists.newArrayList();
         longs.forEach(id -> {
             Optional<Device> optional = deviceRepository.findById(id);

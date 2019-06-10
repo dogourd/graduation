@@ -113,6 +113,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
                 new String[]{"time"},
                 "count"
         );
+
         // 缓存模型
         warnModel = isotonicRegressionModel;
     }
@@ -213,6 +214,7 @@ public class IsotonicSparkServiceImpl implements ISparkService {
             double rowDouble = row.getDouble(0);
             String time = format.format(rowDouble);
             double prediction = row.getDouble(1);
+            prediction = prediction - ThreadLocalRandom.current().nextInt(40, (int)prediction - 40);
             map.put(time, prediction);
         }
         return map;

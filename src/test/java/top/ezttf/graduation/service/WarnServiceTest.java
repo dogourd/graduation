@@ -112,4 +112,10 @@ public class WarnServiceTest {
         List<Warn> warns = hbaseTemplate.find("graduation:warn", new Scan(), new WarnRowMapper());
         warns.forEach(warn -> log.debug("{}", warn.getCount()));
     }
+
+    @Test
+    public void findAll() {
+        List<Warn> warns = hbaseTemplate.find("graduation:warn", Constants.WarnTable.FAMILY_I, new WarnRowMapper());
+        warns.forEach(warn -> log.info(warn.getCount().toString()));
+    }
 }
